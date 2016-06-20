@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html
+  <head>
+    <title>Get Back</title>
+    <meta name="description" content="Accurately determine the set back for your Nashville property">
+    <link id="favicon" rel="icon" href="" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+   <nav>
+     <a class="home-icon" href="#">GetBack</a>
+   </nav>
+   <header>
+     <h1 id="welcome-to-getback">Welcome to GetBack! Don't talk to me.</h1>
+   </header>
+   <main>
+     <label class="is-hidden-accessible" for="address-input">Address Input</label>
+     <input id="address-input" class="address-input" type="text" autocomplet="street-address" placeholder="Nashville City Hall, Nashville, TN, 37201"/>
+     <ul class="address-results"></ul>
+     <section id="zoning-info"></section>
+     <section id="introduction">
+       <p>Enter your street address to receive your property setbacks.</p>
+       <p>If we can't calculate your setbacks due to a special exception to the rules
+       we'll let you know who to contact to get help</p>
+     </section>
+     <div id="error-notification"></div>
+   </main>
+   <template id="address-result-template">
+    <li class="address-result">
+    </li>
+   </template>
+   <script src="app.js"></script>
+  </body>
+</html>

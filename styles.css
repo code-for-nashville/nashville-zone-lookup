@@ -1,0 +1,65 @@
+body {
+    font-size: 25px;
+}
+
+nav {
+    background-color: lightgrey;
+    box-sizing: border-box;
+    padding: 5px;
+    width: 100%;
+    border: 1px solid black;
+}
+
+nav a {
+    text-decoration: none;
+    color: inherit;
+}
+
+main {
+    max-width: 500px;
+    margin: auto;
+}
+
+h1 {
+    font-size: 25px;
+    font-weight: normal;
+    text-align: center;
+}
+
+.address-input {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+ul.address-results {
+    background-color: white;
+    list-style: none;
+    margin-top: 0px;
+    /* Overrides default left-padding for ul */
+    padding-left: 0px;
+}
+
+li.address-result {
+    /* Truncate text with an ellipsis */
+    border: 1px solid black;
+    overflow: hidden;
+    padding: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+/* Only border top for first list item. Otherwise we get a double border between list items */
+li.address-result:not(:first-child) {
+    border-top: 0px;
+}
+
+li:hover {
+    background-color: skyblue;
+}
+
+/* utility classes */
+.is-hidden-accessible {
+    left: -1000px;
+    position: absolute;
+}
