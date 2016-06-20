@@ -65,7 +65,7 @@ function createAddressResult(candidate) {
 
 function deleteAddressResults() {
   let results = document.getElementsByClassName(ADDRESS_RESULT_CLASS);
- 
+
   while (results.length) {
     results[0].remove();
   }
