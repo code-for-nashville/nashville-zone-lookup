@@ -17,7 +17,7 @@ var addressInput = document.getElementById('address-input'),
     introduction = document.getElementById('introduction'),
     template = document.getElementById('address-result-template');
 
-addressInput.addEventListener('keyup', populateAddressSearchResults);
+addressInput.addEventListener('keyup', debounce(populateAddressSearchResults, false, 400));
 
 function populateAddressSearchResults(e) {
     if (e.target.value.length < MINIMUM_ADDRESS_SEARCH_LENGTH) {
@@ -52,7 +52,7 @@ function getAddressMatches(value) {
 function createAddressResult(candidate) {
     var clone,
         li = template.content.querySelector('li');
-    
+
     li.dataset.x = candidate.location.x;
     li.dataset.y = candidate.location.y;
     li.textContent = candidate.address;
@@ -103,4 +103,41 @@ function getZoningInfoForLocation(location) {
 function setError(message) {
   var error = document.getElementById('error-notification');
   error.textContent = message;
+}
+
+/**
+ *
+ * Bind as a callback to an event or whatever. Function will exhibit one of two
+ * behaviors:
+ *
+ * imm === true, the debounced callback (`fn`) will be fired immediately on the
+ * bound event, and then at least `wait` ms must pass before it will be allowed
+ * to fire again.
+ *
+ * imm === false, the debouncer will start a countdown of `wait` ms when the
+ * bound event is first fired. The debounced callback will fire after the
+ * countdown ellapses.  Every time a successive instance of the bound event
+ * fires, the countdown will reset, and the debounced callback will only fire
+ * after the countdown is allowed to run out.
+ *
+ * @param {function} fn Callback to be debounced
+ * @param {boolean} imm Immediate flag, see above description
+ * @param {number} wait Millisecond wait time
+ */
+function debounce (fn, imm, wait) {
+  var to, wait = wait || 300;
+
+  return function debounced () {
+    var self = this, args = arguments;
+
+    var later = function later () {
+      to = null;
+      if (!imm) fn.apply(self, args);
+    }
+
+    var callNow = imm && !to;
+    clearTimeout(to);
+    to = setTimeout(later, wait);
+    if (callNow) fn.apply(self, args);
+  }
 }
