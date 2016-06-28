@@ -6,7 +6,7 @@ const ADDRESS_RESULT_CLASS = 'address-result',
       DEFAULT_ERROR_MESSAGE = 'We\'re having trouble getting addresses right now. If you believe this is a serious issue, please email shenfieldmax@gmail.com',
       MINIMUM_ADDRESS_SEARCH_LENGTH = 4,
       MAX_LOCATIONS_DISPLAYED = 5,
-      SPATIAL_REFERENCE = {"wkid":102100,"latestWkid":3857},
+      SPATIAL_REFERENCE = JSON.stringify({"wkid":102100,"latestWkid":3857}),
       FIND_ADDRESS_ENDPOINT = 'http://maps.nashville.gov/arcgis/rest/services/Locators/LocNashComp/GeocodeServer/findAddressCandidates?outSR=' +
         encodeURIComponent(SPATIAL_REFERENCE) + '&maxLocations=' + MAX_LOCATIONS_DISPLAYED + '&f=json',
       GET_PARCEL_DATA_ENDPOINT = 'http://maps.nashville.gov/arcgis/rest/services/Cadastral/Cadastral_Layers/MapServer/4/query?' +
