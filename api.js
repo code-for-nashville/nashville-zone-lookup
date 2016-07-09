@@ -1,5 +1,7 @@
 "use strict";
 
+const zones = require("./zones.js");
+
 const path = require("path");
 const request = require("superagent");
 const express = require("express");
@@ -28,14 +30,70 @@ function getZoningHistory (req, res, next) {
 
             } else {
                 console.log("good");
-                res.set("content-type", resp.headers["content-type"]);
-                res.end(resp.text);
+
+                res.set("content-type", "application/json");
+
+                const zoneInfo = parseZoneData(resp.text)
+
+                res.json(zoneInfo);
             }
         });
 }
 
 function onErr (err, req, res, next) {
     throw err;
+}
+
+/**
+ * Given the sample below, parse out Zoning, Description, Ordinance
+ * and return as an object
+ *
+ * Will set null for properties not found in the Zoning xml
+ */
+function parseZoneData (text) {
+   /*
+    * <ZoningInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    * xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    * xmlns="http://maps.nashville.gov">
+    * <anyType xsi:type="ZoningInfo">
+        * <Zoning>IR</Zoning>
+        * <EffectiveDate>12/24/1974</EffectiveDate>
+        * <Description>Industrial Restrictive is intended for a wide range of
+        * light manufacturing uses at moderate intensities within enclosed
+        * structures.</Description>
+        * <CaseNumber />
+        * <Ordinance>O73-650</Ordinance>
+        * <OrdinanceHref>O73-650</OrdinanceHref>
+        * <Status>Current</Status>
+        * <PIN>74859</PIN>
+    * </anyType>
+    * </ZoningInfo>
+    *
+    * We want the Zoning element
+    */
+
+    let reZone = /<zoning>(.+)<\/zoning>/i;
+    let res = reZone.exec(text);
+
+    let reDesc = /<description>(.+)<\/description>/i;
+    let dRes = reDesc.exec(text);
+
+    let reOrd = /<ordinance>(.+)<\/ordinance>/i;
+    let oRes = reOrd.exec(text);
+
+    const zoneInfo =  {
+        zoning: res && res[1],
+        description: dRes && dRes[1],
+        ordinance: oRes && oRes[1],
+    };
+
+    const zoneCode = zoneInfo.zoning && zoneInfo.zoning.toLowerCase() || null;
+    console.log(zones[zoneCode]);
+
+    zoneInfo.setbacks = zoneCode && zones[zoneCode] || null; // null or an object
+    zoneInfo.setBackUnit = "ft";
+
+    return zoneInfo;
 }
 
 api.listen(3000)

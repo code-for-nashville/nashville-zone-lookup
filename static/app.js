@@ -93,7 +93,7 @@
           getZoningHist(parId, function (err, txt) {
               if (err) return setError(ZONING_ERROR_MESSAGE);
 
-              let zone = parseZoneData(txt);
+              let zone = JSON.parse(txt);
               console.log(zone);
           });
 
@@ -137,8 +137,8 @@
         let xhr = genXHR(url);
 
         xhr.onload = function onLoad () {
-            var text = xhr.responseText;
-            cb(null, text);
+            var zoneHistory = xhr.responseBody|| xhr.responseText;
+            cb(null, zoneHistory);
         }
 
         xhr.onerror = function onError (err) {
@@ -146,50 +146,6 @@
         }
 
         xhr.send();
-    }
-
-    /**
-     * Given the sample below, parse out Zoning, Description, Ordinance
-     * and return as an object
-     *
-     * Will set null for properties not found in the Zoning xml
-     */
-    function parseZoneData (text) {
-       /*
-        * <ZoningInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        * xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        * xmlns="http://maps.nashville.gov">
-        * <anyType xsi:type="ZoningInfo">
-            * <Zoning>IR</Zoning>
-            * <EffectiveDate>12/24/1974</EffectiveDate>
-            * <Description>Industrial Restrictive is intended for a wide range of
-            * light manufacturing uses at moderate intensities within enclosed
-            * structures.</Description>
-            * <CaseNumber />
-            * <Ordinance>O73-650</Ordinance>
-            * <OrdinanceHref>O73-650</OrdinanceHref>
-            * <Status>Current</Status>
-            * <PIN>74859</PIN>
-        * </anyType>
-        * </ZoningInfo>
-        *
-        * We want the Zoning element
-        */
-
-        let reZone = /<zoning>(.+)<\/zoning>/i;
-        let res = reZone.exec(text);
-
-        let reDesc = /<description>(.+)<\/description>/i;
-        let dRes = reDesc.exec(text);
-
-        let reOrd = /<ordinance>(.+)<\/ordinance>/i;
-        let oRes = reOrd.exec(text);
-
-        return {
-            zoning: res && res[1],
-            description: dRes && dRes[1],
-            ordinance: oRes && oRes[1]
-        };
     }
 
     function setError(message) {
