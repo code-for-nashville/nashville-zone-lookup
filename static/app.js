@@ -5,6 +5,7 @@
     // to avoid spamming it.
     const ADDRESS_RESULT_CLASS = 'address-result',
           DEFAULT_ERROR_MESSAGE = 'We\'re having trouble getting addresses right now. If you believe this is a serious issue, please email shenfieldmax@gmail.com',
+          ZONING_ERROR_MESSAGE = 'We\'re having a bit of difficulty looking up your zoning issue. Try again in a few minutes.',
           MINIMUM_ADDRESS_SEARCH_LENGTH = 4,
           MAX_LOCATIONS_DISPLAYED = 5,
           SPATIAL_REFERENCE = JSON.stringify({"wkid":102100,"latestWkid":3857}),
@@ -13,7 +14,8 @@
           GET_PARCEL_DATA_ENDPOINT = 'http://maps.nashville.gov/arcgis/rest/services/Cadastral/Cadastral_Layers/MapServer/4/query?' +
             'f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometryType=esriGeometryPoint&inSR=102100&outFields=*&outSR=102100';
 
-    let GET_ZONING_HIST_ENDPOINT = 'http://maps.nashville.gov/ParcelService/Search.asmx/GetZoningHistory?onlyactive=false';
+    //let GET_ZONING_HIST_ENDPOINT = 'http://maps.nashville.gov/ParcelService/Search.asmx/GetZoningHistory?onlyactive=false';
+    const GET_ZONING_HIST_ENDPOINT = "/api/zoningHistory";
 
     var addressInput = document.getElementById('address-input'),
         addressResults = document.getElementsByClassName('address-results')[0],
@@ -36,7 +38,7 @@
             });
           }).catch(function(nooo) {
               console.error(nooo);
-              setError(DEFAULT_ERROR_MESSAGE);  
+              setError(DEFAULT_ERROR_MESSAGE);
           });
     }
 
@@ -81,6 +83,7 @@
       };
 
       hideIntroduction();
+
       getZoningInfoForLocation(location)
         .then(function(response) {
           console.log(response);
@@ -88,7 +91,10 @@
           var parId = response.features[0].attributes.ParID;
 
           getZoningHist(parId, function (err, txt) {
-            console.info(arguments);
+              if (err) return setError(ZONING_ERROR_MESSAGE);
+
+              let zone = parseZoneData(txt);
+              console.log(zone);
           });
 
         //}).then(function (response) {
@@ -107,9 +113,16 @@
 
     function getZoningInfoForLocation(location) {
       location['spatialReference'] = SPATIAL_REFERENCE
+
+      //var url = new URLSearchParams()
+      //url.set("geometry", JSON.stringify(location))
+      //var queryString = url.toString();
+
+      //return fetch("/api/zoningHistory?" + queryString)
       return fetch(GET_PARCEL_DATA_ENDPOINT + '&geometry=' + encodeURIComponent(JSON.stringify(location)))
         .then(function(response) {
           return response.json();
+
         }).then(function(response) {
           if (response.error) {
             throw response.error;
@@ -119,13 +132,8 @@
     }
 
     function getZoningHist(parId, cb) {
-        let headers = new Headers({
-            accept: "application/json"
-        });
+        let url = GET_ZONING_HIST_ENDPOINT + "?pin=" + parId;
 
-        let url = GET_ZONING_HIST_ENDPOINT + "&pin=" + parId + "&f=json";
-
-        //return fetch(url, { mode: "cors", headers: headers });
         let xhr = genXHR(url);
 
         xhr.onload = function onLoad () {
@@ -140,6 +148,50 @@
         xhr.send();
     }
 
+    /**
+     * Given the sample below, parse out Zoning, Description, Ordinance
+     * and return as an object
+     *
+     * Will set null for properties not found in the Zoning xml
+     */
+    function parseZoneData (text) {
+       /*
+        * <ZoningInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        * xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        * xmlns="http://maps.nashville.gov">
+        * <anyType xsi:type="ZoningInfo">
+            * <Zoning>IR</Zoning>
+            * <EffectiveDate>12/24/1974</EffectiveDate>
+            * <Description>Industrial Restrictive is intended for a wide range of
+            * light manufacturing uses at moderate intensities within enclosed
+            * structures.</Description>
+            * <CaseNumber />
+            * <Ordinance>O73-650</Ordinance>
+            * <OrdinanceHref>O73-650</OrdinanceHref>
+            * <Status>Current</Status>
+            * <PIN>74859</PIN>
+        * </anyType>
+        * </ZoningInfo>
+        *
+        * We want the Zoning element
+        */
+
+        let reZone = /<zoning>(.+)<\/zoning>/i;
+        let res = reZone.exec(text);
+
+        let reDesc = /<description>(.+)<\/description>/i;
+        let dRes = reDesc.exec(text);
+
+        let reOrd = /<ordinance>(.+)<\/ordinance>/i;
+        let oRes = reOrd.exec(text);
+
+        return {
+            zoning: res && res[1],
+            description: dRes && dRes[1],
+            ordinance: oRes && oRes[1]
+        };
+    }
+
     function setError(message) {
       var error = document.getElementById('error-notification');
       error.textContent = message;
@@ -152,10 +204,6 @@
         }
 
         let xhr = new XMLHttpRequest();
-        xhr.withCredentials = true;
-
-        // TODO some cross browser stuff here
-        // we're just going to clap our hands and say we believe
 
         xhr.open(method, url, true);
 
