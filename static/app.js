@@ -1,4 +1,4 @@
-(function (ctx, $) {
+(function (ctx, _) {
     'use strict'
 
     // Set a minimum length before we start pinging the address service
@@ -14,7 +14,6 @@
           GET_PARCEL_DATA_ENDPOINT = 'http://maps.nashville.gov/arcgis/rest/services/Cadastral/Cadastral_Layers/MapServer/4/query?' +
             'f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometryType=esriGeometryPoint&inSR=102100&outFields=*&outSR=102100';
 
-    //let GET_ZONING_HIST_ENDPOINT = 'http://maps.nashville.gov/ParcelService/Search.asmx/GetZoningHistory?onlyactive=false';
     const GET_ZONING_HIST_ENDPOINT = "/api/zoningHistory";
 
     var addressInput = document.getElementById('address-input'),
@@ -22,7 +21,7 @@
         introduction = document.getElementById('introduction'),
         template = document.getElementById('address-result-template');
 
-    addressInput.addEventListener('keyup', debounce(populateAddressSearchResults, false, 400));
+    addressInput.addEventListener('keyup', _.debounce(populateAddressSearchResults, 400));
 
     function populateAddressSearchResults(e) {
         if (e.target.value.length < MINIMUM_ADDRESS_SEARCH_LENGTH) {
@@ -91,20 +90,15 @@
           var parId = response.features[0].attributes.ParID;
 
           getZoningHist(parId, function (err, txt) {
-              if (err) return setError(ZONING_ERROR_MESSAGE);
+              if (err) {
+                setError(ZONING_ERROR_MESSAGE);
+                return;
+              }
 
-              let zone = JSON.parse(txt);
-              console.log(zone);
+              document.getElementById('temp-zone-display').textContent = txt;
+
+              return JSON.parse(txt);
           });
-
-        //}).then(function (response) {
-            //console.info(response);
-            //return response.text();
-
-        //}).then(function (body) {
-            //console.info("in text then")
-            //console.log(body);
-
         }).catch(function(ohgod) {
           console.error(ohgod);
           setError(DEFAULT_ERROR_MESSAGE);
@@ -114,11 +108,6 @@
     function getZoningInfoForLocation(location) {
       location['spatialReference'] = SPATIAL_REFERENCE
 
-      //var url = new URLSearchParams()
-      //url.set("geometry", JSON.stringify(location))
-      //var queryString = url.toString();
-
-      //return fetch("/api/zoningHistory?" + queryString)
       return fetch(GET_PARCEL_DATA_ENDPOINT + '&geometry=' + encodeURIComponent(JSON.stringify(location)))
         .then(function(response) {
           return response.json();
@@ -165,41 +154,4 @@
 
         return xhr;
     }
-
-    /**
-     *
-     * Bind as a callback to an event or whatever. Function will exhibit one of two
-     * behaviors:
-     *
-     * imm === true, the debounced callback (`fn`) will be fired immediately on the
-     * bound event, and then at least `wait` ms must pass before it will be allowed
-     * to fire again.
-     *
-     * imm === false, the debouncer will start a countdown of `wait` ms when the
-     * bound event is first fired. The debounced callback will fire after the
-     * countdown ellapses.  Every time a successive instance of the bound event
-     * fires, the countdown will reset, and the debounced callback will only fire
-     * after the countdown is allowed to run out.
-     *
-     * @param {function} fn Callback to be debounced
-     * @param {boolean} imm Immediate flag, see above description
-     * @param {number} wait Millisecond wait time
-     */
-    function debounce (fn, imm, wait) {
-      var to, wait = wait || 300;
-
-      return function debounced () {
-        var self = this, args = arguments;
-
-        var later = function later () {
-          to = null;
-          if (!imm) fn.apply(self, args);
-        }
-
-        var callNow = imm && !to;
-        clearTimeout(to);
-        to = setTimeout(later, wait);
-        if (callNow) fn.apply(self, args);
-      }
-    }
-})(window, jQuery)
+})(window, _)
