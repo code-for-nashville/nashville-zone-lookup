@@ -63,3 +63,10 @@ li:hover {
     left: -1000px;
     position: absolute;
 }
+
+.zone {
+    margin: auto;
+    font-size: 50px;
+    color: green;
+
+}

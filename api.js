@@ -93,10 +93,8 @@ function parseZoneData (text) {
     const single = zones["single-family"];
     const multi = zones["multi-family"];
 
-    zoneInfo.setbacks = {
-        "single-family": single[zoneCode] || null,
-        "multi-family": multi[zoneCode] || null
-    };
+    zoneInfo.single = single[zoneCode] || null
+    zoneInfo.multi = multi[zoneCode] || null;
 
     zoneInfo.setBackUnit = "ft";
 

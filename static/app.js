@@ -75,6 +75,22 @@
       }
     }
 
+    const zoneTemp =
+    "<p class='zone'> Zoning: " + "<%= zoning %>" + "</p>" +
+
+    "<p> Single Family Setback: " + "<%= single || 'n/a' %>" + "</p>" +
+
+    "<p> Multi Family Setback: " + "<%= multi || 'n/a' %>" + "</p>" +
+
+    "<p> Description: " + "<%= description %>" + "</p>" +
+
+    "<p> Ordinance: " + "<%= ordinance %>" + "</p>";
+
+
+
+
+    const zoneDispFun = _.template(zoneTemp);
+
     function openLocationPage(e) {
       var location = {
         x: +e.target.dataset.x,
@@ -95,9 +111,14 @@
                 return;
               }
 
-              document.getElementById('temp-zone-display').textContent = JSON.stringify(JSON.parse(txt), null, 2);
+              var zoneInfo  = JSON.parse(txt);
 
-              return JSON.parse(txt);
+              var tempDisplay = document.getElementById('temp-zone-display');
+
+              tempDisplay.innerHTML
+                  = zoneDispFun(zoneInfo);
+
+              return zoneInfo;
           });
         }).catch(function(ohgod) {
           console.error(ohgod);
