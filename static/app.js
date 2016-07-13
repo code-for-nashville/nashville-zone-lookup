@@ -4,7 +4,7 @@
     // Set a minimum length before we start pinging the address service
     // to avoid spamming it.
     const ADDRESS_RESULT_CLASS = 'address-result',
-          DEFAULT_ERROR_MESSAGE = 'We\'re having trouble getting addresses right now. If you believe this is a serious issue, please email shenfieldmax@gmail.com',
+          DEFAULT_ERROR_MESSAGE = 'We\'re having trouble getting addresses right now. If you believe this is a serious issue, please email <support@somesite.com>',
           ZONING_ERROR_MESSAGE = 'We\'re having a bit of difficulty looking up your zoning issue. Try again in a few minutes.',
           MINIMUM_ADDRESS_SEARCH_LENGTH = 4,
           MAX_LOCATIONS_DISPLAYED = 5,
@@ -99,6 +99,8 @@
                 return;
               }
 
+              clearError()
+
               var zoneInfo  = JSON.parse(txt);
 
               var tempDisplay = document.getElementById('temp-zone-display');
@@ -149,6 +151,12 @@
     function setError(message) {
       var error = document.getElementById('error-notification');
       error.textContent = message;
+    }
+
+
+    function clearError() {
+      var error = document.getElementById('error-notification');
+      error.textContent = '';
     }
 
     function genXHR (method, url) {
