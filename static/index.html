@@ -37,6 +37,16 @@
     </li>
    </template>
    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
+
+   <script id="zone-info-template" type="text/template">
+       <p class='zone'> Zoning:   <%= zoning %>  </p>
+       <p> Single Family Setback:   <%= single || 'n/a' %>  </p>
+       <p> Multi Family Setback:   <%= multi || 'n/a' %>  </p>
+       <p> Description:   <%= description %>  </p>
+       <p> Ordinance:   <%= ordinance %>  </p>
+   </script>
+
    <script src="app.js"></script>
+
   </body>
 </html>

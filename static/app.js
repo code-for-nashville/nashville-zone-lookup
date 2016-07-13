@@ -75,19 +75,7 @@
       }
     }
 
-    const zoneTemp =
-    "<p class='zone'> Zoning: " + "<%= zoning %>" + "</p>" +
-
-    "<p> Single Family Setback: " + "<%= single || 'n/a' %>" + "</p>" +
-
-    "<p> Multi Family Setback: " + "<%= multi || 'n/a' %>" + "</p>" +
-
-    "<p> Description: " + "<%= description %>" + "</p>" +
-
-    "<p> Ordinance: " + "<%= ordinance %>" + "</p>";
-
-
-
+    const zoneTemp = document.getElementById("zone-info-template").innerText;
 
     const zoneDispFun = _.template(zoneTemp);
 
