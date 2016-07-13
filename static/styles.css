@@ -70,3 +70,9 @@ li:hover {
     color: green;
 
 }
+
+#error-notification {
+  color: red;
+  background-color: lightpink;
+  width: 100%;
+}

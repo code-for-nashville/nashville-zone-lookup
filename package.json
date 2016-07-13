@@ -1,5 +1,5 @@
 {
-  "name": "setback-app",
+  "name": "setback-615",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.14.0",
     "superagent": "^2.0.0"
