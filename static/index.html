@@ -40,7 +40,16 @@
 
    <script id="zone-info-template" type="text/template">
        <p class='zone'> Zoning:   <%= zoning %>  </p>
-       <p> Single Family Setback:   <%= single || 'n/a' %>  </p>
+       <p> Single Family Setback: </p>
+       <p>
+           <span> Minor and local streets: 
+           </span> <% single && print(single["minor-local-local"]) || "n/a" %>
+       </p>
+       <p>
+           <span> All other streets: </span> 
+           <% single && print(single["all-other"]) || "n/a" %>
+       </p>
+       </p>
        <p> Multi Family Setback:   <%= multi || 'n/a' %>  </p>
        <p> Description:   <%= description %>  </p>
        <p> Ordinance:   <%= ordinance %>  </p>
