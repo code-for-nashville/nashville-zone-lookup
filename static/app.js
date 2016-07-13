@@ -95,7 +95,7 @@
                 return;
               }
 
-              document.getElementById('temp-zone-display').textContent = txt;
+              document.getElementById('temp-zone-display').textContent = JSON.stringify(JSON.parse(txt), null, 2);
 
               return JSON.parse(txt);
           });

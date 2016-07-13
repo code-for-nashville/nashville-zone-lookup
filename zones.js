@@ -9,6 +9,7 @@ const _5  = 5;
 const _0  = 0;
 
 const zones = {
+    "single-family": {
         "ag":        {
             "minor-local-local": _40,
             "all-other": _40
@@ -618,209 +619,212 @@ const zones = {
         "rm67-a":    {
             "minor-local-local": _5,
             "all-other": _5
-        },
-        "rm68-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm69-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm70-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm71-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm72-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm73-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm74-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm75-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm76-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm77-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm78-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm79-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm80-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm81-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm82-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm83-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm84-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm85-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm86-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm87-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm88-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm89-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm90-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm91-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm92-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm93-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm94-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm95-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm96-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm97-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm98-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm99-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "rm100-a":   {
-            "minor-local-local": _5,
-            "all-other": _5
+            },
+            "rm68-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm69-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm70-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm71-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm72-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm73-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm74-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm75-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm76-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm77-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm78-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm79-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm80-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm81-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm82-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm83-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm84-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm85-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm86-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm87-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm88-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm89-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm90-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm91-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm92-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm93-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm94-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm95-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm96-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm97-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm98-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm99-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "rm100-a":   {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+    
+            "mun-a":     {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "mul-a":     {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "mug-a":     {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "mui-a":     {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "or20-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "or40-a":    {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
+            "ori-a":     {
+                "minor-local-local": _5,
+                "all-other": _5
+            },
         },
 
-        "mun-a":     {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "mul-a":     {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "mug-a":     {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "mui-a":     {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "or20-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "or40-a":    {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
-        "ori-a":     {
-            "minor-local-local": _5,
-            "all-other": _5
-        },
+        "multi-family": {
+            "ag": _40,
 
-        "ag": _40,
+            // .. ag - rm15 (whatever that means)
+            "rm15": _40,
 
-        // .. ag - rm15 (whatever that means)
-        "rm15": _40,
+            "rm20": _30,
+            "rm40": _30,
 
-        "rm20": _30,
-        "rm40": _30,
+            "on":    _20,
+            "ol":    _20,
+            "og":    _20,
+            "or20":  _20,
+            "or40":  _20,
 
-        "on":    _20,
-        "ol":    _20,
-        "og":    _20,
-        "or20":  _20,
-        "or40":  _20,
+            "rm60":  _10,
+            "mun":   _10,
+            "mul":   _10,
+            "mug":   _10,
+            "ori":   _10,
 
-        "rm60":  _10,
-        "mun":   _10,
-        "mul":   _10,
-        "mug":   _10,
-        "ori":   _10,
+            "cn":    _20,
+            "cn-a":  _20,
+            "scn":   _20,
+            "scc":   _20,
+            "scr":   _20,
 
-        "cn":    _20,
-        "cn-a":  _20,
-        "scn":   _20,
-        "scc":   _20,
-        "scr":   _20,
+            "cl":    _15,
+            "cl-a":  _15,
+            "cs":    _15,
+            "cs-a":  _15,
+            "ca":    _15,
 
-        "cl":    _15,
-        "cl-a":  _15,
-        "cs":    _15,
-        "cs-a":  _15,
-        "ca":    _15,
+            "iwd":   _5,
+            "ir":    _5,
+            "ig":    _5,
 
-        "iwd":   _5,
-        "ir":    _5,
-        "ig":    _5,
+            "cf":    _0,
+            "mui":   _0,
 
-        "cf":    _0,
-        "mui":   _0,
-
-        "dtc":   "See chapter 17.37" // need href
+            "dtc":   "See chapter 17.37" // need href
+        }
 }
 
 module.exports = zones;

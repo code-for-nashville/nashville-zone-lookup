@@ -90,7 +90,14 @@ function parseZoneData (text) {
     const zoneCode = zoneInfo.zoning && zoneInfo.zoning.toLowerCase() || null;
     console.log(zones[zoneCode]);
 
-    zoneInfo.setbacks = zoneCode && zones[zoneCode] || null; // null or an object
+    const single = zones["single-family"];
+    const multi = zones["multi-family"];
+
+    zoneInfo.setbacks = {
+        "single-family": single[zoneCode] || null,
+        "multi-family": multi[zoneCode] || null
+    };
+
     zoneInfo.setBackUnit = "ft";
 
     return zoneInfo;
