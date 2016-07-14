@@ -1,6 +1,9 @@
 {
   "name": "setback-615",
   "version": "0.1.0",
+  "engines": {
+      "node": ">=4.2.3"
+  },
   "description": "",
   "main": "index.js",
   "scripts": {
