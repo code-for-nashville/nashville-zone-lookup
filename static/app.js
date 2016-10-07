@@ -1,6 +1,6 @@
 (function (ctx, _) {
     'use strict'
-
+        //
     // Set a minimum length before we start pinging the address service
     // to avoid spamming it.
     const ADDRESS_RESULT_CLASS = 'address-result',
@@ -15,16 +15,65 @@
             'f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometryType=esriGeometryPoint&inSR=102100&outFields=*&outSR=102100';
 
     const GET_ZONING_HIST_ENDPOINT = "/api/zoningHistory";
+    //const zoneTemp = document.getElementById("zone-info-template").innerText;
+    //const zoneDispFun = _.template(zoneTemp);
 
-    var addressInput = document.getElementById('address-input'),
-        addressResults = document.getElementsByClassName('address-results')[0],
-        introduction = document.getElementById('introduction'),
-        template = document.getElementById('address-result-template');
 
-    addressInput.addEventListener('keyup', _.debounce(populateAddressSearchResults, 400));
+    //var addressInput   = document.getElementById('address-input'),
+        //addressResults = document.getElementsByClassName('address-results')[0],
+        //introduction   = document.getElementById('introduction'),
+        //template       = document.getElementById('address-result-template');
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            title: "MetroSetbacks",
+            addressQuery: "",
+            addressResults: [],
+            zoneInfo: {},
+            querying: false,
+            dropDownOpen: false,
+            showError: false,
+            errorMessage: ""
+        },
+
+        methods: {
+            onErr: function onErr (err) {
+                this.errorMessage = err;
+                this.showError = true;
+            },
+
+            doSearch: function doSearch () {
+                var query = this.addressQuery;
+                if (query.length < 5) return;
+                //console.info(query)
+                var url = FIND_ADDRESS_ENDPOINT + '&SingleLine='
+                    + encodeURIComponent(query)
+
+                var self = this;
+
+                fetch(url)
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function (hits) {
+                        self.addressResults = hits.candidates.map(function (hit) { 
+                            return {
+                                x: hit.location.x,
+                                y: hit.location.y,
+                                address: hit.address
+                            }
+                        });
+                    })
+                    .catch(this.onErr);
+            }
+        }
+    })
 
     function populateAddressSearchResults(e) {
-        if (e.target.value.length < MINIMUM_ADDRESS_SEARCH_LENGTH) {
+        var val = e.target.value;
+
+        if (val.length < MINIMUM_ADDRESS_SEARCH_LENGTH) {
             deleteAddressResults();
             return;
         }
@@ -47,10 +96,6 @@
 
     function getAddressMatches(value) {
       // the outSR parameter defines the version of the spatial reference returned
-      return fetch(FIND_ADDRESS_ENDPOINT + '&SingleLine=' + encodeURIComponent(value))
-        .then(function(response) {
-          return response.json();
-        });
     }
 
     function createAddressResult(candidate) {
@@ -60,6 +105,7 @@
         li.dataset.x = candidate.location.x;
         li.dataset.y = candidate.location.y;
         li.textContent = candidate.address;
+
         clone = document.importNode(li, true);
         addressResults.appendChild(clone);
         // Adding event listeners won't work until you importNode and add it to the DOM
@@ -74,10 +120,6 @@
         results[0].remove();
       }
     }
-
-    const zoneTemp = document.getElementById("zone-info-template").innerText;
-
-    const zoneDispFun = _.template(zoneTemp);
 
     function openLocationPage(e) {
       var location = {

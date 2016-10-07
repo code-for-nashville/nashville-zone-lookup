@@ -1,61 +1,86 @@
 <!DOCTYPE html>
 <html
-  <head>
-    <title>Setback 615</title>
-    <meta name="description" content="Accurately determine the set back for your Nashville property">
-    <link id="favicon" rel="icon" href="" type="image/x-icon">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="normalize.css">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-   <nav>
-     <a class="home-icon" href="#">Setback 615</a>
-   </nav>
-   <header>
-     <h1 id="welcome-to-setback">Welcome to Setback 615!</h1>
-   </header>
-   <main>
-     <label class="is-hidden-accessible" for="address-input">Address Input</label>
-     <input id="address-input" class="address-input" type="text" autocomplet="street-address" placeholder="Nashville City Hall, Nashville, TN, 37201"/>
-     <ul class="address-results"></ul>
-     <section id="zoning-info"></section>
-     <section id="introduction">
-       <p>Enter your street address to receive your property setbacks.</p>
-       <p>If we can't calculate your setbacks due to a special exception to the rules
-       we'll let you know who to contact to get help</p>
-     </section>
-     <div>
-         <div id="temp-zone-display"></div>
-     </div>
-     <div id="error-notification"></div>
-   </main>
-   <template id="address-result-template">
-    <li class="address-result">
-    </li>
-   </template>
-   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
+    <head>
+        <title>Setback 615</title>
+        <meta name="description" content="Accurately determine the set back for your Nashville property">
+        <link id="favicon" rel="icon" href="" type="image/x-icon">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="normalize.css">
+        <link rel="stylesheet" href="styles.css">
+    </head>
 
-   <script id="zone-info-template" type="text/template">
-       <p class='zone'> Zoning:   <%= zoning %>  </p>
-       <p> Single Family Setback: </p>
-       <p>
-           <span> Minor and local streets: 
-           </span> <% single && print(single["minor-local-local"]) || "n/a" %>
-       </p>
-       <p>
-           <span> All other streets: </span> 
-           <% single && print(single["all-other"]) || "n/a" %>
-       </p>
-       </p>
-       <p> Multi Family Setback:   <%= multi || 'n/a' %>  </p>
-       <p> Description:   <%= description %>  </p>
-       <p> Ordinance:   <%= ordinance %>  </p>
-   </script>
+    <body>
+        <div id="app">
+            <nav>
+                <a class="home-icon" href="#">{{ title }}</a>
+            </nav>
 
-   <script src="app.js"></script>
+            <header>
+                <h1 id="welcome-to-setback">Welcome to Setback 615!</h1>
+            </header>
 
-  </body>
+            <main>
+                <label class="is-hidden-accessible" for="address-input">Address Input</label>
+
+                <input class="address-input" type="text"
+                    @input="doSearch"
+                    v-model="addressQuery"
+                    autocomplet="street-address"
+                    placeholder="Nashville City Hall, Nashville, TN, 37201"/>
+
+                <ul class="address-results">
+                    <li v-for="address in addressResults">
+                        {{ address.address }}
+                    </li>
+                </ul>
+
+                <section id="zoning-info"></section>
+
+                <section id="introduction">
+                    <p>Enter your street address to receive your property setbacks.</p>
+                    <p>If we can't calculate your setbacks due to a special exception to the rules
+                        we'll let you know who to contact to get help</p>
+                </section>
+
+                <div>
+                    <div id="temp-zone-display"></div>
+                </div>
+
+                <div id="error-notification"></div>
+            </main>
+        </div>
+
+        <script id="address-result-template" type="x-template">
+            <li class="address-result">
+            </li>
+        </script>
+
+        <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.1/underscore-min.js"></script>
+        <script src="//unpkg.com/vue@2.0.1/dist/vue.js" type="text/javascript"></script>
+
+        <script id="zoneinfo-template" type="x-template">
+            <p class='zone'> Zoning:   <%= zoning %>  </p>
+            <p> Single Family Setback: </p>
+            <p>
+            <span> Minor and local streets: 
+            </span> <% single && print(single["minor-local-local"]) || "n/a" %>
+            </p>
+            <p>
+            <span> All other streets: </span> 
+            <% single && print(single["all-other"]) || "n/a" %>
+            </p>
+            </p>
+            <p> Multi Family Setback:   <%= multi || 'n/a' %>  </p>
+            <p> Description:   <%= description %>  </p>
+            <p> Ordinance:   <%= ordinance %>  </p>
+        </script>
+
+        <script src="polyfills.js" type="text/javascript" /></script>
+        <script src="es6-promise.auto.min.js" type="text/javascript" /></script>
+        <script src="fetch.js" type="text/javascript"></script>
+        <script src="app.js"></script>
+
+    </body>
 </html>
