@@ -7,18 +7,22 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+
         <link rel="stylesheet" href="normalize.css">
         <link rel="stylesheet" href="styles.css">
     </head>
 
     <body>
         <div id="app">
-            <nav>
-                <a class="home-icon" href="#">{{ title }}</a>
-            </nav>
+            <div class="nav-wrap">
+                <nav>
+                    <a class="home-icon" href="#">{{ title }}</a>
+                </nav>
+            </div>
 
             <header>
-                <h1 id="welcome-to-setback">Welcome to Setback 615!</h1>
+                <h1 id="welcome-to-setback">Welcome to Metro Setbacks!</h1>
             </header>
 
             <main>
@@ -37,7 +41,10 @@
                 <ul class="address-results"
                     style="display: none;"
                     v-show="addressResults.length > 0">
-                    <li v-for="address in addressResults" @click="getZoningInfo(address)">
+                    <li
+                        class="address-result"
+                        v-for="address in addressResults"
+                        @click="getZoningInfo(address)">
                         {{ address.address }}
                     </li>
                 </ul>

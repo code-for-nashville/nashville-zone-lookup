@@ -20,7 +20,7 @@
     var app = new Vue({
         el: "#app",
         data: {
-            title: "MetroSetbacks",
+            title: "Metro Setbacks",
             addressQuery: "",
             addressResults: [],
             zoningInfo: {},
