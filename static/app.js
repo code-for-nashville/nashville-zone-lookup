@@ -3,7 +3,7 @@
         //
     // Set a minimum length before we start pinging the address service
     // to avoid spamming it.
-    const ADDRESS_RESULT_CLASS = 'address-result',
+    var ADDRESS_RESULT_CLASS = 'address-result',
           DEFAULT_ERROR_MESSAGE = 'We\'re having trouble getting addresses right now. If you believe this is a serious issue, please email <support@somesite.com>',
           ZONING_ERROR_MESSAGE = 'We\'re having a bit of difficulty looking up your zoning issue. Try again in a few minutes.',
           MINIMUM_ADDRESS_SEARCH_LENGTH = 4,
@@ -15,7 +15,7 @@
           GET_PARCEL_DATA_ENDPOINT = 'http://maps.nashville.gov/arcgis/rest/services/Cadastral/Cadastral_Layers/MapServer/4/query?' +
             'f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometryType=esriGeometryPoint&inSR=102100&outFields=*&outSR=102100';
 
-    const GET_ZONING_HIST_ENDPOINT = "/api/zoningHistory";
+    var GET_ZONING_HIST_ENDPOINT = "/api/zoningHistory";
 
     var app = new Vue({
         el: "#app",
