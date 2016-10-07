@@ -101,4 +101,8 @@ function parseZoneData (text) {
     return zoneInfo;
 }
 
-api.listen(3000)
+const port = process.env.PORT || 3000
+
+api.listen(port, () => {
+    console.info(`Listening on ${port}`)
+})
