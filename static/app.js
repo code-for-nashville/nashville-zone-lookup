@@ -15,14 +15,6 @@
             'f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometryType=esriGeometryPoint&inSR=102100&outFields=*&outSR=102100';
 
     const GET_ZONING_HIST_ENDPOINT = "/api/zoningHistory";
-    //const zoneTemp = document.getElementById("zone-info-template").innerText;
-    //const zoneDispFun = _.template(zoneTemp);
-
-
-    //var addressInput   = document.getElementById('address-input'),
-        //addressResults = document.getElementsByClassName('address-results')[0],
-        //introduction   = document.getElementById('introduction'),
-        //template       = document.getElementById('address-result-template');
 
     var app = new Vue({
         el: "#app",
@@ -43,10 +35,11 @@
                 this.showError = true;
             },
 
-            doSearch: function doSearch () {
+            doSearch: _.debounce(function doSearch () {
                 var query = this.addressQuery;
+
                 if (query.length < 5) return;
-                //console.info(query)
+
                 var url = FIND_ADDRESS_ENDPOINT + '&SingleLine='
                     + encodeURIComponent(query)
 
@@ -57,7 +50,7 @@
                         return response.json();
                     })
                     .then(function (hits) {
-                        self.addressResults = hits.candidates.map(function (hit) { 
+                        self.addressResults = hits.candidates.map(function (hit) {
                             return {
                                 x: hit.location.x,
                                 y: hit.location.y,
@@ -65,8 +58,8 @@
                             }
                         });
                     })
-                    .catch(this.onErr);
-            }
+                    .catch(self.onErr);
+            }, 400)
         }
     })
 
