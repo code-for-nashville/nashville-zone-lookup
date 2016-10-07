@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-size: 25px;
 }
@@ -70,21 +74,26 @@ li:hover {
     background-color: skyblue;
 }
 
-/* utility classes */
-.is-hidden-accessible {
-    left: -1000px;
-    position: absolute;
+.zoning-info {
+    margin-top: 24px;
 }
 
 .zone {
     margin: auto;
     font-size: 50px;
     color: green;
-
 }
 
 #error-notification {
   color: red;
   background-color: lightpink;
+  padding: 8px;
   width: 100%;
+  margin-top: 24px;
+}
+
+/* utility classes */
+.is-hidden-accessible {
+    left: -1000px;
+    position: absolute;
 }

@@ -34,14 +34,19 @@
                 </div>
 
 
-                <ul class="address-results">
+                <ul class="address-results"
+                    style="display: none;"
+                    v-show="addressResults.length > 0">
                     <li v-for="address in addressResults" @click="getZoningInfo(address)">
                         {{ address.address }}
                     </li>
                 </ul>
 
                 <section id="zoning-info"
-                    v-if="showZoningInfo">
+                    class="zoning-info"
+                    style="display: none;"
+                    v-show="showZoningInfo">
+
                     <p class='zone'> Zoning:   {{ zoningInfo.zoning }}  </p>
                     <p> Single Family Setback: </p>
                     <p>
@@ -64,7 +69,8 @@
                 </section>
 
                 <div id="error-notification"
-                    v-if="showError">
+                    style="display: none;"
+                    v-show="showError">
                     {{ errorMessage }}
                 </div>
             </main>

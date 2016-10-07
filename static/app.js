@@ -35,10 +35,31 @@
         },
 
         methods: {
-            onErr: function onErr (err) {
-                self.showSearchSpinner = false;
-                this.errorMessage = err && err.message || "An error has occured";
+            reset: function reset () {
+                this.showSearchSpinner = false;
+                this.showIntro = true;
+                this.showError = false;
+                this.showZoningInfo = false
+            },
+
+            _showError: function _showError () {
+                this.showSearchSpinner = false;
+                this.showIntro = false;
                 this.showError = true;
+                this.showZoningInfo = false
+            },
+
+            _showZoningInfo: function _showZoningInfo () {
+                this.showSearchSpinner = false;
+                this.showIntro = false;
+                this.showError = false;
+                this.showZoningInfo = true
+            },
+
+            onErr: function onErr (err) {
+                console.error(err);
+                this.errorMessage = err && err.message || "An error has occured";
+                this._showError()
             },
 
             getZoningInfo: function getZoningInfo (address) {
@@ -57,7 +78,9 @@
                     .then(function (parcel) {
                         if (parcel.error) throw parcel.error;
 
-                        var parcelId = parcel.features[0].attributes.ParID;
+                        if (parcel.features.length > 0)
+                            var parcelId = parcel.features[0].attributes.ParID;
+                        else throw new Error("We can't find good info on that addess. Please contact <email address>");
 
                         var url = GET_ZONING_HIST_ENDPOINT + "?pin=" + parcelId;
 
@@ -67,12 +90,10 @@
                         return resp.json();
                     })
                     .then(function (zoningInfo) {
-                        console.log(zoningInfo)
                         self.zoningInfo = zoningInfo;
-                        self.showError = false;
-                        self.showIntro = false;
-                        self.showZoningInfo = true;
-                        self.addressResults = [];
+                        //self.addressResults = [];
+
+                        self._showZoningInfo()
                     })
                     .catch(self.onErr);
             },
@@ -80,7 +101,12 @@
             doSearch: _.debounce(function doSearch () {
                 var query = this.addressQuery;
 
-                if (query.length < 5) return;
+                if (query.length < 5) {
+                    this.addressResults = [];
+                    this.showZoningInfo = false;
+                    this.showIntro = true;
+                    return;
+                }
 
                 var url = FIND_ADDRESS_ENDPOINT + '&SingleLine='
                     + encodeURIComponent(query)
