@@ -9,6 +9,7 @@
           MINIMUM_ADDRESS_SEARCH_LENGTH = 4,
           MAX_LOCATIONS_DISPLAYED = 5,
           SPATIAL_REFERENCE = JSON.stringify({"wkid":102100,"latestWkid":3857}),
+          // the outSR parameter defines the version of the spatial reference returned
           FIND_ADDRESS_ENDPOINT = 'http://maps.nashville.gov/arcgis/rest/services/Locators/LocNashComp/GeocodeServer/findAddressCandidates?outSR=' +
             encodeURIComponent(SPATIAL_REFERENCE) + '&maxLocations=' + MAX_LOCATIONS_DISPLAYED + '&f=json',
           GET_PARCEL_DATA_ENDPOINT = 'http://maps.nashville.gov/arcgis/rest/services/Cadastral/Cadastral_Layers/MapServer/4/query?' +
@@ -22,17 +23,58 @@
             title: "MetroSetbacks",
             addressQuery: "",
             addressResults: [],
-            zoneInfo: {},
+            zoningInfo: {},
             querying: false,
             dropDownOpen: false,
+            errorMessage: "",
+
+            showSearchSpinner: false,
+            showIntro: true,
             showError: false,
-            errorMessage: ""
+            showZoningInfo: false
         },
 
         methods: {
             onErr: function onErr (err) {
-                this.errorMessage = err;
+                self.showSearchSpinner = false;
+                this.errorMessage = err && err.message || "An error has occured";
                 this.showError = true;
+            },
+
+            getZoningInfo: function getZoningInfo (address) {
+                address['spatialReference'] = SPATIAL_REFERENCE
+
+                var url = GET_PARCEL_DATA_ENDPOINT + "&geometry="
+                    + encodeURIComponent(JSON.stringify(address));
+
+                var self = this;
+
+                fetch(url)
+                    .then(function (resp) {
+                        return resp.json()
+                        //return res;
+                    })
+                    .then(function (parcel) {
+                        if (parcel.error) throw parcel.error;
+
+                        var parcelId = parcel.features[0].attributes.ParID;
+
+                        var url = GET_ZONING_HIST_ENDPOINT + "?pin=" + parcelId;
+
+                        return fetch(url);
+                    })
+                    .then(function (resp) {
+                        return resp.json();
+                    })
+                    .then(function (zoningInfo) {
+                        console.log(zoningInfo)
+                        self.zoningInfo = zoningInfo;
+                        self.showError = false;
+                        self.showIntro = false;
+                        self.showZoningInfo = true;
+                        self.addressResults = [];
+                    })
+                    .catch(self.onErr);
             },
 
             doSearch: _.debounce(function doSearch () {
@@ -45,11 +87,15 @@
 
                 var self = this;
 
+                this.showSearchSpinner = true;
+
                 fetch(url)
                     .then(function(response) {
                         return response.json();
                     })
                     .then(function (hits) {
+                        self.showSearchSpinner = false;
+
                         self.addressResults = hits.candidates.map(function (hit) {
                             return {
                                 x: hit.location.x,
@@ -62,148 +108,4 @@
             }, 400)
         }
     })
-
-    function populateAddressSearchResults(e) {
-        var val = e.target.value;
-
-        if (val.length < MINIMUM_ADDRESS_SEARCH_LENGTH) {
-            deleteAddressResults();
-            return;
-        }
-
-        getAddressMatches(e.target.value)
-          .then(function(response) {
-            deleteAddressResults();
-            response.candidates.forEach(function(candidate) {
-              createAddressResult(candidate);
-            });
-          }).catch(function(nooo) {
-              console.error(nooo);
-              setError(DEFAULT_ERROR_MESSAGE);
-          });
-    }
-
-    function hideIntroduction() {
-      introduction.setAttribute('hidden', '');
-    }
-
-    function getAddressMatches(value) {
-      // the outSR parameter defines the version of the spatial reference returned
-    }
-
-    function createAddressResult(candidate) {
-        var clone,
-            li = template.content.querySelector('li');
-
-        li.dataset.x = candidate.location.x;
-        li.dataset.y = candidate.location.y;
-        li.textContent = candidate.address;
-
-        clone = document.importNode(li, true);
-        addressResults.appendChild(clone);
-        // Adding event listeners won't work until you importNode and add it to the DOM
-        clone.addEventListener('click', openLocationPage);
-    }
-
-
-    function deleteAddressResults() {
-      let results = document.getElementsByClassName(ADDRESS_RESULT_CLASS);
-
-      while (results.length) {
-        results[0].remove();
-      }
-    }
-
-    function openLocationPage(e) {
-      var location = {
-        x: +e.target.dataset.x,
-        y: +e.target.dataset.y
-      };
-
-      hideIntroduction();
-
-      getZoningInfoForLocation(location)
-        .then(function(response) {
-          console.log(response);
-
-          var parId = response.features[0].attributes.ParID;
-
-          getZoningHist(parId, function (err, txt) {
-              if (err) {
-                setError(ZONING_ERROR_MESSAGE);
-                return;
-              }
-
-              clearError()
-
-              var zoneInfo  = JSON.parse(txt);
-
-              var tempDisplay = document.getElementById('temp-zone-display');
-
-              tempDisplay.innerHTML
-                  = zoneDispFun(zoneInfo);
-
-              return zoneInfo;
-          });
-        }).catch(function(ohgod) {
-          console.error(ohgod);
-          setError(DEFAULT_ERROR_MESSAGE);
-        })
-    }
-
-    function getZoningInfoForLocation(location) {
-      location['spatialReference'] = SPATIAL_REFERENCE
-
-      return fetch(GET_PARCEL_DATA_ENDPOINT + '&geometry=' + encodeURIComponent(JSON.stringify(location)))
-        .then(function(response) {
-          return response.json();
-
-        }).then(function(response) {
-          if (response.error) {
-            throw response.error;
-          }
-          return response;
-        });
-    }
-
-    function getZoningHist(parId, cb) {
-        let url = GET_ZONING_HIST_ENDPOINT + "?pin=" + parId;
-
-        let xhr = genXHR(url);
-
-        xhr.onload = function onLoad () {
-            var zoneHistory = xhr.responseBody|| xhr.responseText;
-            cb(null, zoneHistory);
-        }
-
-        xhr.onerror = function onError (err) {
-            cb(err);
-        }
-
-        xhr.send();
-    }
-
-    function setError(message) {
-      var error = document.getElementById('error-notification');
-      error.textContent = message;
-    }
-
-
-    function clearError() {
-      var error = document.getElementById('error-notification');
-      error.textContent = '';
-    }
-
-    function genXHR (method, url) {
-        if (!url) {
-            url = method;
-            method = "GET";
-        }
-
-        let xhr = new XMLHttpRequest();
-
-        xhr.open(method, url, true);
-
-        return xhr;
-    }
 })(window, _)

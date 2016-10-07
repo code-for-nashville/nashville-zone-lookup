@@ -26,6 +26,18 @@ h1 {
     text-align: center;
 }
 
+.input-group {
+    position: relative;
+}
+
+.loading-spinner {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    left: -40px;
+    top: -3px;
+}
+
 .address-input {
     box-sizing: border-box;
     width: 100%;
