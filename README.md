@@ -10,6 +10,10 @@ Email nick@codefornashville.org if the above link does not work.
 
 ## Running
 
+To build the frontend app and prepare to it be served by Phoenix:
+
+  * `mix build_assets`
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
