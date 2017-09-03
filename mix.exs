@@ -1,6 +1,8 @@
 defmodule Parcel.Mixfile do
   use Mix.Project
 
+  @assets_source "frontend"
+
   def project do
     [
       app: :parcel,
@@ -49,9 +51,10 @@ defmodule Parcel.Mixfile do
   end
 
   defp build_assets(_) do
-    Mix.shell.info("Building static assets.")
-    System.cmd("npm", ["install"], cd: "./frontend")
-    System.cmd("npm", ["run", "build"], cd: "./frontend")
+    Mix.shell.info("Building static assets in '#{@assets_source}'.")
+    System.cmd("npm", ["install"], cd: "./#{@assets_source}")
+    System.cmd("npm", ["run", "build"], cd: "./#{@assets_source}")
+
     Mix.shell.info("Static assets successfully built.")
   end
 end
