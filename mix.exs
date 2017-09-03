@@ -9,7 +9,8 @@ defmodule Parcel.Mixfile do
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases()
     ]
   end
 
@@ -39,5 +40,18 @@ defmodule Parcel.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"}
     ]
+  end
+
+  defp aliases do
+    [
+      build_assets: &build_assets/1
+    ]
+  end
+
+  defp build_assets(_) do
+    Mix.shell.info("Building static assets.")
+    System.cmd("npm", ["install"], cd: "./frontend")
+    System.cmd("npm", ["run", "build"], cd: "./frontend")
+    Mix.shell.info("Static assets successfully built.")
   end
 end
