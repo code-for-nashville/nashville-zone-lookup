@@ -31,6 +31,7 @@ To build and run this app for production:
 ## Planning
 - For a detailed description of the project, check out the [Request for Volunteers](https://docs.google.com/document/d/17DNk0QQyi8SEK4utcMt3zT-Dc6vXzA_zcFwrEENvKJo/edit?usp=sharing).
 - For other shared documents, check out [Google Drive](https://drive.google.com/drive/folders/0Byi0NApRjhBXekRiVFA5MlZ2OTQ?usp=sharing).
+- For the latest design documents, check out [Invision](https://projects.invisionapp.com/share/8WCW9Z0QD#/screens/247107120_Starting_Page).
 - For the planning board, check out [Github](https://github.com/code-for-nashville/parcel/projects/1).
 
 Email nick@codefornashville.org if the above links do not work.
