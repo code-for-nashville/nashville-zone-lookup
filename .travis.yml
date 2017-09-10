@@ -1,0 +1,25 @@
+language: elixir
+
+elixir:
+  - 1.5.1
+
+otp_release:
+  - 20.0.4
+
+pre_install:
+  - nvm install --lts
+  - nvm use --lts
+  - cd frontend
+  - npm install
+
+script:
+  - mix test
+  - cd frontend
+  - npm run unit
+  - npm run e2e
+
+branches:
+  only:
+    - master
+    - develop
+    - temp/setup-travis
