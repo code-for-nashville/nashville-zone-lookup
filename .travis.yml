@@ -9,6 +9,7 @@ before_install:
   - nvm use --lts
   - cd frontend
   - npm install
+  - cd ..
 
 script:
   - mix test
