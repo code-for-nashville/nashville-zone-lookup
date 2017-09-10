@@ -14,3 +14,8 @@ erl_crash.dump
 # secrets files as long as you replace their contents by environment
 # variables.
 /config/*.secret.exs
+
+# Build CSS/JS
+/priv/static/css
+/priv/static/js
+!/priv/static/js/phoenix.js
