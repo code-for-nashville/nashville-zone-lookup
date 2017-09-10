@@ -4,7 +4,7 @@ elixir:
 otp_release:
   - 20.0.4
 
-pre_install:
+before_install:
   - nvm install --lts
   - nvm use --lts
   - cd frontend
