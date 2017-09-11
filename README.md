@@ -1,4 +1,4 @@
-# Parcel
+# Parcel [![Build Status](https://travis-ci.org/code-for-nashville/parcel.svg?branch=temp%2Fsetup-travis)](https://travis-ci.org/code-for-nashville/parcel)
 
 Answering your Nashville, TN acceptable land use questions.
 
@@ -17,8 +17,9 @@ To build and run this app locally:
 - Install the Mix dependencies `mix deps.get`.
 - Compile the project `mix compile`.
 - Run the Phoenix server `mix phx.server`.
-- Install the frontend dependencies `cd frontend && npm install`.
-- Run the frontend's HTTP server `cd frontend && npm run dev`.
+- Navigate to frontend app `cd frontend`.
+- Install the NPM dependencies `npm install`.
+- Run the frontend's HTTP server `npm run dev`.
 
 _Note: Additional commands are available for the frontend app and are documented in its [README](frontend)._
 
@@ -27,6 +28,19 @@ To build and run this app for production:
 - Compile the project `mix compile`.
 - Build and copy the frontend app to the Phoenix server `mix parcel.prepare_static_assets`.
 - Run the Phoenix server `mix phx.server`.
+
+## Testing
+To test the backend:
+- Install the Mix dependencies `mix deps.get`.
+- Compile the project `mix compile`.
+- Run tests `mix test`.
+
+To test the frontend:
+- Navigate to frontend app `cd frontend`.
+- Install the NPM dependencies `npm install`.
+- Run the unit tests `npm run unit`.
+- Run the end-to-end tests `npm run e2e`.
+- Run the unit and end-to-end tests `npm run test`.
 
 ## Planning
 - For a detailed description of the project, check out the [Request for Volunteers](https://docs.google.com/document/d/17DNk0QQyi8SEK4utcMt3zT-Dc6vXzA_zcFwrEENvKJo/edit?usp=sharing).
