@@ -29,7 +29,6 @@ branches:
   only:
     - master
     - develop
-    - temp/setup-travis
 
 addons:
   chrome: stable
