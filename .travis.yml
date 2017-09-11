@@ -7,22 +7,23 @@ otp_release:
   - 20.0.4
 
 before_install:
+  # for e2e testing using Chrome and Selenium
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
+  # install and use latest NodeJS LTS release
   - nvm install --lts
   - nvm use --lts
+  # install frontend dependencies
   - cd frontend
   - npm install
   - cd ..
 
-# before_script:
-#   - jdk_switcher use oraclejdk8
-
 script:
+  # test backend
   - mix test
+  # test frontend
   - cd frontend
-  - npm run unit
-  - npm run e2e
+  - npm run test
 
 branches:
   only:
