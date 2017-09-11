@@ -6,9 +6,6 @@ elixir:
 otp_release:
   - 20.0.4
 
-# sudo: required
-# dist: trusty
-
 before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
@@ -18,8 +15,8 @@ before_install:
   - npm install
   - cd ..
 
-before_script:
-  - jdk_switcher use oraclejdk8
+# before_script:
+#   - jdk_switcher use oraclejdk8
 
 script:
   - mix test
