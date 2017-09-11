@@ -1,4 +1,4 @@
-# Parcel
+# Parcel [![Build Status](https://travis-ci.org/code-for-nashville/parcel.svg?branch=temp%2Fsetup-travis)](https://travis-ci.org/code-for-nashville/parcel)
 
 Answering your Nashville, TN acceptable land use questions.
 
