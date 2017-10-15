@@ -1,5 +1,5 @@
 <template>
-	<div class="">
+	<div>
 		<div class="no-gutters row">
 			<div class="headerContainer d-flex align-items-start primaryBackgroundColor primaryTextColor mx-auto col-12">
 				<div class="headerImageContainer primaryBackgroundColor">
@@ -22,9 +22,6 @@
 					</div>
 				</div>
 			</div>
-<!-- 			<div class="subheaderContainer d-flex align-items-start primaryBackgroundColor mx-auto col-12">
-				<img src="../assets/nashville-skyline.png">
-			</div> -->
 		</div>
 	</div>
 </template>
@@ -66,9 +63,6 @@
     margin-bottom: -0.5rem;
 	opacity: 0.5;
 	z-index: -1;
-/*	height: 5rem;
-	background: #1B355D url("../assets/nashville-skyline.png") no-repeat;
-	background-size: contain;*/
 }
 
 .textHeader {
