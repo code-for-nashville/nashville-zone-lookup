@@ -10,9 +10,9 @@ defmodule ParcelWeb.AddressCandidateController do
   def index(conn, %{"address" => address}) do
     case Zoning.list_address_candidates(address) do
       {:ok, address_candidates} -> render(conn, "index.json", address_candidates: address_candidates)
-      :error -> {:error, :internal_server_error}
+      :error -> {:error, :internal_server_error, "Upstream address candidate service unavailable."}
     end
   end
 
-  def index(_conn, _params), do: {:error, :bad_request}
+  def index(_conn, _params), do: {:error, :bad_request, "Missing address parameter."}
 end
