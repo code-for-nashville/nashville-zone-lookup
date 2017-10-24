@@ -3,9 +3,6 @@ defmodule ParcelWeb.AddressCandidateControllerTest do
 
   import Mox
 
-  alias Parcel.Zoning
-  alias Parcel.Zoning.AddressCandidate
-
   setup :verify_on_exit!
 
   setup %{conn: conn} do
