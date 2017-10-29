@@ -6,6 +6,12 @@ elixir:
 otp_release:
   - 20.0.4
 
+cache:
+  directories:
+    - _build
+    - deps
+    - frontend/node_modules
+
 before_install:
   # for e2e testing using Chrome and Selenium
   - export DISPLAY=:99.0
