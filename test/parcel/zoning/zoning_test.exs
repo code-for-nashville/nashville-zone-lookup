@@ -17,4 +17,10 @@ defmodule Parcel.ZoningTest do
       assert Zoning.list_address_candidates(input) == {:ok, []}
     end
   end
+
+  describe "list_intended_uses/0" do
+    test "returns a static list of intended uses" do
+      assert Zoning.list_intended_uses() == {:ok, Application.get_env(:parcel, :intended_uses)}
+    end
+  end
 end
