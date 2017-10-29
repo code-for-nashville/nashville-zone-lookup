@@ -1,6 +1,10 @@
 defmodule ParcelWeb.Router do
   use ParcelWeb, :router
 
+  pipeline :api do
+    plug :accepts, ["json"]
+  end
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -9,8 +13,10 @@ defmodule ParcelWeb.Router do
     plug :put_secure_browser_headers
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
+  scope "/api", ParcelWeb do
+    pipe_through :api
+
+    get "/address-candidates", AddressCandidateController, :index
   end
 
   scope "/", ParcelWeb do
@@ -18,9 +24,4 @@ defmodule ParcelWeb.Router do
 
     get "/*page", PageController, :index
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", ParcelWeb do
-  #   pipe_through :api
-  # end
 end
