@@ -23,6 +23,28 @@
 				</div>
 			</div>
 		</div>
+		<div id="addressContentContainer" class="no-gutters row justify-content-center">
+			<div class="col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+				<h2>Enter street address<br> or zoning code</h2>
+			</div>
+			<div class="w-100"></div>
+			<div id="addressInputContainer" class="col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+				<input type="text" name="" id="addressInput" placeholder="1700 3rd Ave N, 37208 or 1238817">
+			</div>
+		</div>
+		<div id="searchResultsContainer" class="no-gutters row justify-content-center">
+			<div id="searchResultsHeader" class="col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+				<div class="col-10 clearfix">
+					<div class="categoryColor"></div>
+					<div class="zoningCategory">Industrial, IDW</div>
+				</div>
+				<div class="col-10">
+					<p class="zoningDescription">
+						Industrial Warehousing/Distribution, intended for a wide range of warehousing, wholesaling, and bulk distribution uses.
+					</p>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -137,13 +159,60 @@
 	color: #FFF;
 }
 
+#addressContentContainer {
+
+}
+
+.categoryColor {
+    float: left;
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    margin-top: 0.85rem;
+    margin-right: 0.5rem;
+    border-radius: 50%;
+    background-color: blue;
+}
+
+.zoningCategory {
+    float: left;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
+.zoningDescription {
+	text-align: left;
+}
+
+h2 {
+	margin-top: 0.5rem;
+    text-align: left;
+    font-size: 25px;
+    color: #FFF;
+}
+
+#addressInputContainer {
+	margin-top: 0.5rem;
+}
+
+#addressInput {
+    height: 3.5rem;
+    width: 100%;
+    padding: 3px 10px;
+    border: 1px solid #ccc;
+    border-radius: 0.3rem;
+    box-shadow: 0px 0px 1px 0.25px rgba(204,204,204,1);
+}
+
+#searchResultsHeader {
+	height: 5rem;
+}
+
 @media (min-width: 575px) {
 	.headerDropdown {
 		min-width: 18rem;
-	}
-
-	.headerImageContainer {
-		margin-top: 3rem;
 	}
 
 	.headerContainer img {
@@ -163,6 +232,20 @@
 @media (min-width: 767px) {
 	.textHeader {
 	    font-size: 3vw;
+	}
+
+	#addressContentContainer {
+	    margin-top: 4%;
+	}
+}
+
+@media (min-width: 992px) {
+	#addressContentContainer {
+	    margin-top: 5%;
+	}
+
+	h2 {
+		font-size: 30px;
 	}
 }
 
@@ -190,15 +273,27 @@
 	.headerDropdown ~ .show {
 		min-width: 24rem;
 	}
+
+	#addressContentContainer {
+	    margin-top: 4.5%;
+	}
+
+	h2 {
+		font-size: 35px;
+	}
 }
 
 @media (min-width: 1440px) {
 	.textHeader {
-	    padding-left: 4.5rem;
+	    padding-left: 2.5rem;
 	}
 
 	.headerDropdown {
 	    margin-right: 7rem;
+	}
+
+	#addressContentContainer {
+	    margin-top: 5rem;
 	}
 }
 
