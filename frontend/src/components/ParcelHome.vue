@@ -49,7 +49,23 @@
 </template>
 
 <script>
+  import { mapGetters, mapActions } from 'vuex'
 
+  export default {
+  computed: {
+    ...mapGetters({
+      intendedUses: 'intendedUses/intendedUses'
+    })
+  },
+  methods: {
+    ...mapActions({
+      fetchAllIntendedUses: 'intendedUses/fetchAllIntendedUses'
+    })
+  },
+  created () {
+    this.fetchAllIntendedUses()
+  }
+}
 </script>
 
 <style scoped>
