@@ -18,7 +18,7 @@
               </li>
 						  <div class="dropdown-divider"></div>
 							<li>
-                <a class="dropdown-item" href="#">
+                <a class="gotom" href="#">
                   <i class="fa fa-cloud-download" aria-hidden="false"></i>Download PDF
                 </a>
               </li>
@@ -56,19 +56,19 @@
   import { mapGetters, mapActions } from 'vuex'
 
   export default {
-  computed: {
-    ...mapGetters({
-      intendedUses: 'intendedUses/intendedUses'
-    })
-  },
-  methods: {
-    ...mapActions({
-      fetchAllIntendedUses: 'intendedUses/fetchAllIntendedUses'
-    })
-  },
-  created () {
-    this.fetchAllIntendedUses()
-  }
+    computed: {
+      ...mapGetters({
+        intendedUses: 'intendedUses/intendedUses'
+      })
+    },
+    methods: {
+      ...mapActions({
+        fetchAllIntendedUses: 'intendedUses/fetchAllIntendedUses'
+      })
+    },
+    created () {
+      this.fetchAllIntendedUses()
+    }
 }
 </script>
 

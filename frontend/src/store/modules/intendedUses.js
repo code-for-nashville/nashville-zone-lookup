@@ -11,14 +11,13 @@ export const getters = {
 
 export const actions = {
   fetchAllIntendedUses ({ commit }) {
-    console.log('#fetchAllIntendedUses')
     ParcelApiClient
       .getAllIntendedUses()
       .then((response) => {
         const intendedUses = response.data['intended_uses']
         commit(types.GET_INTENDED_USES_SUCCESS, { intendedUses })
       })
-      .catch((error) => {
+      .catch(() => {
         commit(types.GET_INTENDED_USES_FAILURE)
       })
   }
