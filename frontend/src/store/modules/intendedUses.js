@@ -11,6 +11,7 @@ export const getters = {
 
 export const actions = {
   fetchAllIntendedUses ({ commit }) {
+    console.log('#fetchAllIntendedUses')
     ParcelApiClient
       .getAllIntendedUses()
       .then((response) => {
@@ -33,6 +34,7 @@ const mutations = {
 }
 
 export default {
+  namespaced: true,
   state,
   getters,
   actions,

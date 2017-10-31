@@ -12,12 +12,16 @@
 							Everything
 							<i class="primaryTextColor fa fa-caret-down float-right" aria-hidden="false"></i>
 						</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" href="#">Commercial</a>
-							<a class="dropdown-item" href="#">Educational</a>
-							<a class="dropdown-item" href="#">Residential</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#"><i class="fa fa-cloud-download" aria-hidden="false"></i>Download PDF</a>
+						<div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
+              <li v-for="intendedUse in intendedUses">
+                <a class="dropdown-item" href="#">{{ intendedUse.name }}</a>
+              </li>
+						  <div class="dropdown-divider"></div>
+							<li>
+                <a class="dropdown-item" href="#">
+                  <i class="fa fa-cloud-download" aria-hidden="false"></i>Download PDF
+                </a>
+              </li>
 						</div>
 					</div>
 				</div>
@@ -161,6 +165,12 @@
 	.headerDropdown ~ .fa-caret-down {
 		text-align: right;
 	}
+
+.scrollable-menu {
+    height: auto;
+    max-height: 300px;
+    overflow-x: hidden;
+}
 
 .dropdown-toggle::after {
 	border: none;
@@ -312,5 +322,4 @@ h2 {
 	    margin-top: 5rem;
 	}
 }
-
 </style>
