@@ -38,6 +38,8 @@ defmodule ParcelWeb.Endpoint do
     key: "_parcel_key",
     signing_salt: "ycV3iP0j"
 
+  plug CORSPlug
+
   plug ParcelWeb.Router
 
   @doc """
