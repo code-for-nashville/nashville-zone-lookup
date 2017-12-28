@@ -42,7 +42,8 @@ defmodule Parcel.Mixfile do
       {:httpoison, "~> 0.13.0"},
       {:poison, "~> 3.1"},
       {:mox, "~> 0.2.0", only: :test},
-      {:excoveralls, "~> 0.7", only: :test}
+      {:excoveralls, "~> 0.7", only: :test},
+      {:cors_plug, "~> 1.2"}
     ]
   end
 end

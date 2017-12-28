@@ -3,7 +3,6 @@ defmodule Parcel.NashvilleMetroApi.AddressCandidatesApi do
 
   @base_url "http://maps.nashville.gov/arcgis/rest/services/Locators/LocNashComp/GeocodeServer"
   @default_headers [{"Accept", "application/json"}]
-  @max_locations Application.get_env(:parcel, __MODULE__)[:max_locations]
 
   @doc false
   def process_url(url), do: @base_url <> url
