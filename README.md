@@ -47,6 +47,7 @@ To test the frontend:
 - For other shared documents, check out [Google Drive](https://drive.google.com/drive/folders/0Byi0NApRjhBXekRiVFA5MlZ2OTQ?usp=sharing).
 - For the latest design documents, check out [Invision](https://projects.invisionapp.com/share/8WCW9Z0QD#/screens/247107120_Starting_Page).
 - For the planning board, check out [Github](https://github.com/code-for-nashville/parcel/projects/1).
+- [Latest list of zoning codes](https://library.municode.com/tn/metro_government_of_nashville_and_davidson_county/codes/code_of_ordinances?nodeId=CD_TIT17ZO_CH17.08ZODILAUS)
 
 Email nick@codefornashville.org if the above links do not work.
 
