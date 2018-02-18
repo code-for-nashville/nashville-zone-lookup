@@ -19,3 +19,9 @@ erl_crash.dump
 /priv/static/css
 /priv/static/js
 !/priv/static/js/phoenix.js
+
+# VS Code
+/.vscode
+
+# Elixir Language Server
+/.elixir_ls
