@@ -3,6 +3,8 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
 
   use Mix.Task
 
+  alias Mix.Tasks.Parcel.IngestLandUseTable
+
   @shortdoc "Ingest the Nashville land use spreadsheet"
 
   @land_use_table "./lib/mix/tasks/parcel/land_use_table_2017_02_28.xls.csv"
@@ -60,12 +62,7 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
 
     Mix.shell.info "Reconstructing zone groups..."
 
-    # Reconstruct the zone groups described in @zone_groups_to_zone_codes
-    zone_group_lines = Enum.slice lines, 2..4
-    ordered_zone_groups = Stream.zip(zone_group_lines)
-    |> Stream.map(&Tuple.to_list/1)
-    |> Stream.map(fn(zone_group_parts) -> Enum.join(zone_group_parts, " ") end)
-    |> Enum.map(&String.trim/1)
+    ordered_zone_groups = get_zone_groups lines
 
     Mix.shell.info "Loaded #{length(ordered_zone_groups)} zone groups"
 
@@ -105,13 +102,13 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
     # mapping of categoris to the columns they include. e.g.
     #
     # > map_to_columns(["",  "Agricultural", "Residential", "", "", ""])
-    # %{"Agricultural": [1], "Residential": [2, 3, 4, 5]}
+    # %{"Agricultural": [1], "Residential": [5, 4, 3, 2]}
     #
-    # This skips the irst columns with empty strings
+    # This skips the first columns with empty strings
     {zone_category_to_columns, _} = Stream.with_index(zone_categories_line)
     |> Enum.reduce(
       {
-        %{}, # Accumulator, e.g. %{"Residential" => [1, 2]}
+        %{}, # Accumulator, e.g. %{"Residential" => [2, 1]}
         :unset # Flag indicating we haven't hit our first named column yet
       },
       fn({new_category, index}, {acc, current_category}) ->
@@ -130,6 +127,58 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
     )
 
     Mix.shell.info "Zone categories: #{ inspect zone_category_to_columns}"
+  end
 
+  @doc ~S"""
+  Reconstruct the zone groups described in @zone_groups_to_zone_codes.
+
+  The input data is written such that not every zone gets it's own column.
+  Rows at index 2 through 4 include identifiers of groups of zones:
+
+    ,          ,....
+    Agriculture, Residential,....
+    AG   ,  RS280   , ...
+    and   , thru   , ...
+    AR2a  , RS3.75 , ...
+
+  We translate these three lines into a single list of groups, e.g.
+  ["AG and AR2a", "RS280 thru RS3.75"].  Weve harcoded a mapping of these
+  group identifiers to the individual codes in @zone_groups_to_zone_codes.
+  This allows us to translate the table into information per zone code,
+  even though we only receive information per zone group.
+
+  Note that these come back preserving the order of the columns they are in.
+
+  ## Examples
+  A basic example:
+
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.get_zone_groups([
+      ["Ignore", "these"],
+      ["two", "rows"],
+      ["AG", "RS280"],
+      ["and", "thru"],
+      ["AR2a", "RS3.75-A"]
+      ])
+      ["AG and AR2a", "RS80 thru RS3.75-A"]
+
+  This also handles stripping whitespace - sometimes identifiers only take
+  up two lines
+
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.get_zone_groups([
+      ["Ignore", "these"],
+      ["two", "rows"],
+      ["M", ""],
+      ["H", "O"],
+      ["P", "N"]
+      ])
+      ["M H P", "O N"]
+  """
+  def get_zone_groups(lines) do
+    zone_group_lines = Enum.slice lines, 2..4
+
+    Stream.zip(zone_group_lines)
+      |> Stream.map(&Tuple.to_list/1)
+      |> Stream.map(fn(zone_group_parts) -> Enum.join(zone_group_parts, " ") end)
+      |> Enum.map(&String.trim/1)
   end
 end
