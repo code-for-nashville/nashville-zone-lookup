@@ -68,10 +68,7 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
 
     Mix.shell.info "Checking for unmapped zone groups..."
 
-    # The first column in the current version is an empty string.
-    # We keep it to simplify getting the column of each group, but
-    # don't expect it to be mapped
-    unmapped_zone_groups = (ordered_zone_groups -- [""]) -- Map.keys(@zone_groups_to_zone_codes)
+    unmapped_zone_groups = get_unmapped_zone_groups ordered_zone_groups
     if length(unmapped_zone_groups) > 0 do
       Mix.shell.error(
         "Found #{length(unmapped_zone_groups)} unmapped zone groups: " <>
@@ -91,40 +88,7 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
 
     Mix.shell.info "Reading zone categories and their column ranges"
 
-    zone_categories_line = Enum.at(lines, 1)
-
-    # This row comes back
-    #
-    # "",  "Agricultural", "Residential", "", "", "", ...
-    #
-    # A category followed by empty strings indicates that thos columns
-    # are included in the category.  This reduces our flat list into a
-    # mapping of categoris to the columns they include. e.g.
-    #
-    # > map_to_columns(["",  "Agricultural", "Residential", "", "", ""])
-    # %{"Agricultural": [1], "Residential": [5, 4, 3, 2]}
-    #
-    # This skips the first columns with empty strings
-    {zone_category_to_columns, _} = Stream.with_index(zone_categories_line)
-    |> Enum.reduce(
-      {
-        %{}, # Accumulator, e.g. %{"Residential" => [2, 1]}
-        :unset # Flag indicating we haven't hit our first named column yet
-      },
-      fn({new_category, index}, {acc, current_category}) ->
-        case {new_category, current_category} do
-          {"", :unset} -> {acc, current_category}
-          {"", current_category} ->
-            # Add the index to the old entry
-            acc = %{acc | current_category => [index | acc[current_category]]}
-            {acc, current_category}
-          # We've got a new name, e.g. "Mixed Use". Create a new entry
-          {new_category, _} when new_category != "" ->
-            acc = Map.put(acc, new_category, [index])
-            {acc, new_category}
-        end
-      end
-    )
+    zone_category_to_columns = sparsify_unique(Enum.at(lines, 1))
 
     Mix.shell.info "Zone categories: #{ inspect zone_category_to_columns}"
   end
@@ -153,24 +117,24 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
   A basic example:
 
       iex> Mix.Tasks.Parcel.IngestLandUseTable.get_zone_groups([
-      ["Ignore", "these"],
-      ["two", "rows"],
-      ["AG", "RS280"],
-      ["and", "thru"],
-      ["AR2a", "RS3.75-A"]
-      ])
+      ...>   ["Ignore", "these"],
+      ...>   ["First", "two", "rows"],
+      ...>   ["AG", "RS80"],
+      ...>   ["and", "thru"],
+      ...>   ["AR2a", "RS3.75-A"]
+      ...> ])
       ["AG and AR2a", "RS80 thru RS3.75-A"]
 
   This also handles stripping whitespace - sometimes identifiers only take
   up two lines
 
       iex> Mix.Tasks.Parcel.IngestLandUseTable.get_zone_groups([
-      ["Ignore", "these"],
-      ["two", "rows"],
-      ["M", ""],
-      ["H", "O"],
-      ["P", "N"]
-      ])
+      ...>   ["Ignore", "these"],
+      ...>   ["two", "rows"],
+      ...>   ["M", ""],
+      ...>   ["H", "O"],
+      ...>   ["P", "N"]
+      ...> ])
       ["M H P", "O N"]
   """
   def get_zone_groups(lines) do
@@ -180,5 +144,102 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
       |> Stream.map(&Tuple.to_list/1)
       |> Stream.map(fn(zone_group_parts) -> Enum.join(zone_group_parts, " ") end)
       |> Enum.map(&String.trim/1)
+  end
+
+  @doc ~S"""
+  Returns a list of zone groups that we haven't mapped to individual zone codes
+
+  ## Example
+
+  Returns anything we haven't mapped in @zone_groups_to_zone_codes
+
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.get_unmapped_zone_groups([
+      ...> "GO",  # not real
+      ...> "PREDS" ,  # not real
+      ...> "O N"  # real
+      ...> ])
+      ["GO", "PREDS"]
+
+  This ignores the special case of an empty string (""). Right now we leave in the
+  empty string as the first item to preserve the column index of the zone groups.
+
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.get_unmapped_zone_groups([
+      ...>  "WINGARDIUM",
+      ...>  "LEVIOSA",
+      ...>  ""   # ignored
+      ...> ])
+      ["WINGARDIUM", "LEVIOSA"]
+  """
+  def get_unmapped_zone_groups(zone_groups) do
+    actualy_zone_groups = zone_groups -- [""]
+
+    actualy_zone_groups -- Map.keys(@zone_groups_to_zone_codes)
+  end
+
+  @doc ~S"""
+  Transform a list of unique values into a mapping of the value to the columns it covers
+
+  This is a hacky-ish function to get the ranges of columns covered by the
+  zone categories in our table. One of the headers of the table is
+
+    "",  "Agricultural", "Residential", "", "", "", ...
+
+  Each non-empty string is a category, the empty strings after the category
+  indicate that the category applies for the following columns.  This
+  transforms this into a mapping of each unique value (really just our category)
+  to a list of the columns it covers.
+
+  This is useful as an intermediate step to add a "zone_category" field
+  to our Zone structs.  Because we expand the zone groups in the actual
+  headers into individual zone codes, we can use the result of this
+  function.
+
+  ## Example
+
+  In the basic case this maps each name to the column range:
+
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.sparsify_unique([
+      ...>   "a",
+      ...>   "",
+      ...>   "",
+      ...>   "b",
+      ...>   "c"
+      ...> ])
+      %{"a" => [2, 1, 0], "b" => [3], "c" => [4]}
+
+  If the first elements are the empty value, it treats the empty value as
+  it's own unique value, then continues compressing after the first non-unique
+  value
+
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.sparsify_unique([
+      ...>   "",
+      ...>   "",
+      ...>   "a",
+      ...>   "",
+      ...>   "b"
+      ...> ])
+      %{"" => [1, 0], "a" => [3, 2], "b" => [4]}
+  """
+  def sparsify_unique(list, empty \\ "") do
+    {sparified, _} = Stream.with_index(list)
+    |> Enum.reduce(
+      {
+        %{}, # Accumulator, e.g. %{"Residential" => [2, 1]}
+        nil
+      },
+      fn({new_category, index}, {acc, current_category}) ->
+        case {new_category, current_category} do
+          {^empty, current_category} when current_category != nil ->
+            # Add the index to the old entry
+            acc = %{acc | current_category => [index | acc[current_category]]}
+            {acc, current_category}
+          # We've got a new name, e.g. "Mixed Use". Create a new entry
+          {new_category, _} ->
+            acc = Map.put(acc, new_category, [index])
+            {acc, new_category}
+        end
+      end
+    )
+    sparified
   end
 end
