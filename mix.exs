@@ -43,7 +43,8 @@ defmodule Parcel.Mixfile do
       {:poison, "~> 3.1"},
       {:mox, "~> 0.2.0", only: :test},
       {:excoveralls, "~> 0.7", only: :test},
-      {:cors_plug, "~> 1.2"}
+      {:cors_plug, "~> 1.2"},
+      {:csv, "~> 2.0.0"}
     ]
   end
 end
