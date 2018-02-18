@@ -111,24 +111,20 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
     {zone_category_to_columns, _} = Stream.with_index(zone_categories_line)
     |> Enum.reduce(
       {
-        # Categories to list of column indexes, e.g. %{"Residential" => [1, 2]}
-        %{},
-        # Until we get to our first non-empty name, skip empty strings
-        :unset
+        %{}, # Accumulator, e.g. %{"Residential" => [1, 2]}
+        :unset # Flag indicating we haven't hit our first named column yet
       },
       fn({new_category, index}, {acc, current_category}) ->
-        # We've got a new name, e.g. "Mixed Use". Create a new entry
-        case new_category
-        if new_category != "" do
-          acc = Map.put(acc, new_category, [index])
-          {acc, new_category}
-        else
-          # Add the index to the old entry, unless we haven't gotten to
-          # our first non-empty name
-          unless current_category == :unset do
+        case {new_category, current_category} do
+          {"", :unset} -> {acc, current_category}
+          {"", current_category} ->
+            # Add the index to the old entry
             acc = %{acc | current_category => [index | acc[current_category]]}
-          end
-          {acc, current_category}
+            {acc, current_category}
+          # We've got a new name, e.g. "Mixed Use". Create a new entry
+          {new_category, _} when new_category != "" ->
+            acc = Map.put(acc, new_category, [index])
+            {acc, new_category}
         end
       end
     )
