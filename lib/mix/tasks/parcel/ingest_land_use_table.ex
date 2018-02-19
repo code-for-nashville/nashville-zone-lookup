@@ -1,9 +1,5 @@
 defmodule Mix.Tasks.Parcel.IngestLandUseTable do
-  require CSV
-
   use Mix.Task
-
-  alias Mix.Tasks.Parcel.IngestLandUseTable
 
   @shortdoc "Ingest the Nashville land use spreadsheet"
 
@@ -91,6 +87,14 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
     zone_category_to_columns = sparsify_unique(Enum.at(lines, 1))
 
     Mix.shell.info "Zone categories: #{ inspect zone_category_to_columns}"
+
+    land_use_condition_lines = Enum.slice(lines, 5..-1)
+    |> Stream.filter(&(not land_use_category?(&1)))
+
+    zone_land_use_conditions = Enum.flat_map(
+      land_use_condition_lines,
+      &(get_zoning_district_land_use_conditions(&1, column_zone_codes))
+    )
   end
 
   @doc ~S"""
@@ -106,10 +110,9 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
     AR2a  , RS3.75 , ...
 
   We translate these three lines into a single list of groups, e.g.
-  ["AG and AR2a", "RS280 thru RS3.75"].  Weve harcoded a mapping of these
-  group identifiers to the individual codes in @zone_groups_to_zone_codes.
-  This allows us to translate the table into information per zone code,
-  even though we only receive information per zone group.
+  ["AG and AR2a", "RS280 thru RS3.75"].  This can be used with
+  @zone_groups_to_zone_codes to translate the table into information per
+  zone code, even though we only receive information per zone group.
 
   Note that these come back preserving the order of the columns they are in.
 
@@ -160,8 +163,9 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
       ...> ])
       ["GO", "PREDS"]
 
-  This ignores the special case of an empty string (""). Right now we leave in the
-  empty string as the first item to preserve the column index of the zone groups.
+  This ignores the special case of an empty string (""). Right now we leave in
+  the empty string as the first item to preserve the column index of the zone
+  groups.
 
       iex> Mix.Tasks.Parcel.IngestLandUseTable.get_unmapped_zone_groups([
       ...>  "WINGARDIUM",
@@ -221,7 +225,7 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
       %{"" => [1, 0], "a" => [3, 2], "b" => [4]}
   """
   def sparsify_unique(list, empty \\ "") do
-    {sparified, _} = Stream.with_index(list)
+    {sparsified, _} = Stream.with_index(list)
     |> Enum.reduce(
       {
         %{}, # Accumulator, e.g. %{"Residential" => [2, 1]}
@@ -240,6 +244,53 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
         end
       end
     )
-    sparified
+    sparsified
+  end
+
+  @doc ~S"""
+  Returns True if the line represents a land use category
+
+  Land use category lines have one entry in the first column - every other
+  entry is blank.
+
+    Residential Uses, "", "", "", "", ...
+    Single-family, P, P, PC, ...
+
+  ## Example
+
+  This only returns true if the first element is populated and the remaining
+  lines are blank:
+
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.land_use_category?(
+      ...>   ["hello", "", "", "", ""]
+      ...> )
+      true
+
+  If the first line is empty, or there are some non-empty strings, this
+  returns false
+
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.land_use_category?(
+      ...>   ["", "hello", "", "", "", ""]
+      ...> )
+      false
+
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.land_use_category?(
+      ...>   ["hello", "", "", "", "", "world"]
+      ...> )
+      false
+  """
+  def land_use_category?(line) when length(line) > 0 do
+    [category | rest ] = line
+    (
+      category != "" and
+      Enum.all?(rest, &(&1 == ""))
+    )
+  end
+
+  @doc ~S"""
+  Return a list of `Parcel.Domain.ZoningDistrictLandUseCondition` for the line
+  """
+  def get_zoning_district_land_use_conditions(line, column_zone_codes) do
+    {line, column_zone_codes}
   end
 end
