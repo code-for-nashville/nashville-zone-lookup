@@ -24,9 +24,6 @@ defmodule Parcel.NashvilleMetroApi.AddressCandidatesApi.HttpClient do
       {:error, %HTTPoison.Error{reason: reason}} ->
         Logger.error("The request failed due to the following error: #{reason}.")
         :error
-      %HTTPoison.Response{status_code: code, body: body} ->
-        Logger.error("The request returned a status code #{code} and body #{body}.")
-        :error
     end
   end
 end
