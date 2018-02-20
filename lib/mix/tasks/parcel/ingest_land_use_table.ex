@@ -1,9 +1,7 @@
 defmodule Mix.Tasks.Parcel.IngestLandUseTable do
   use Mix.Task
 
-  @shortdoc "Ingest the Nashville land use spreadsheet"
-
-  @land_use_table "./lib/mix/tasks/parcel/land_use_table_2017_02_28.xls.csv"
+  @shortdoc "Transform the Nashville.gov land use spreadsheet into a list of zone land use conditions"
 
   # The input data is written such that not every zone gets it's own column
   #
@@ -47,48 +45,59 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
     "I G" => ["IG"]
   }
 
-  def run(_) do
-    Mix.shell.info "Loading land use table..."
+  def run(args) do
+    {opts, [filepath]} = OptionParser.parse!(
+      args,
+      strict: [verbose: :boolean]
+    )
+    verbose = Keyword.get(opts, :verbose, false)
 
-    lines = File.stream!(@land_use_table)
+    shell = case verbose do
+      true -> Mix.Shell.IO
+      false -> Mix.Shell.Quiet
+    end
+
+    shell.info "Loading land use table..."
+
+    lines = File.stream!(filepath)
     |> CSV.decode!(strip_fields: true)
     |> Enum.to_list
 
-    Mix.shell.info "Loaded #{length(lines)} lines"
+    shell.info "Loaded #{length(lines)} lines"
 
-    Mix.shell.info "Reconstructing zone groups..."
+    shell.info "Reconstructing zone groups..."
 
     ordered_zone_groups = get_zone_groups lines
 
-    Mix.shell.info "Loaded #{length(ordered_zone_groups)} zone groups"
+    shell.info "Loaded #{length(ordered_zone_groups)} zone groups"
 
-    Mix.shell.info "Checking for unmapped zone groups..."
+    shell.info "Checking for unmapped zone groups..."
 
     unmapped_zone_groups = get_unmapped_zone_groups ordered_zone_groups
     if length(unmapped_zone_groups) > 0 do
-      Mix.shell.error(
+      shell.error(
         "Found #{length(unmapped_zone_groups)} unmapped zone groups: " <>
         "#{inspect unmapped_zone_groups}"
       )
       exit 1
     else
-      Mix.shell.info "All zone groups are mapped (that's good!)"
+      shell.info "All zone groups are mapped (that's good!)"
     end
 
-    Mix.shell.info "Mapping columns to zone codes..."
+    shell.info "Mapping columns to zone codes..."
 
     column_zone_codes = Enum.map(
       ordered_zone_groups,
       &(@zone_groups_to_zone_codes[&1])
     )
 
-    Mix.shell.info "Reading zone categories and their column ranges"
+    shell.info "Reading zone categories and their column ranges"
 
     zone_category_to_columns = sparsify_unique(Enum.at(lines, 1))
 
-    Mix.shell.info "Zone categories: #{ inspect zone_category_to_columns}"
+    shell.info "Zone categories: #{ inspect zone_category_to_columns}"
 
-    Mix.shell.info "Generating zone land use conditions..."
+    shell.info "Generating zone land use conditions..."
 
     land_use_condition_lines = Enum.slice(lines, 5..-1)
     |> Stream.filter(&(not land_use_category?(&1)))
@@ -98,15 +107,11 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
       &(get_zoning_district_land_use_conditions(&1, column_zone_codes))
     )
 
-    Mix.shell.info(
+    shell.info(
       "Generated #{length(zone_land_use_conditions)} zone land use conditions"
     )
-  end
 
-  @doc ~S"""
-  Transform the table into a header of individual codes
-  """
-  def expand_zone_groups_into_individual_codes(lines) do
+    zone_land_use_conditions
   end
 
   @doc ~S"""
