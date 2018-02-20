@@ -91,12 +91,6 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
       &(@zone_groups_to_zone_codes[&1])
     )
 
-    shell.info "Reading zone categories and their column ranges"
-
-    zone_category_to_columns = sparsify_unique(Enum.at(lines, 1))
-
-    shell.info "Zone categories: #{ inspect zone_category_to_columns}"
-
     shell.info "Generating zone land use conditions..."
 
     land_use_condition_lines = Enum.slice(lines, 5..-1)
@@ -187,60 +181,6 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
     actualy_zone_groups = zone_groups
 
     actualy_zone_groups -- Map.keys(@zone_groups_to_zone_codes)
-  end
-
-  @doc ~S"""
-  Transform a list of unique values into a mapping of the value to the columns it covers
-
-  This is a hacky-ish function to get the ranges of columns covered by the
-  zone categories in our table. One of the headers of the table is
-
-    "",  "Agricultural", "Residential", "", "", "", ...
-
-  Each non-empty string is a category, the empty strings after the category
-  indicate that the category applies for the following columns.  This
-  transforms this into a mapping of each unique value (really just our category)
-  to a list of the columns it covers.
-
-  This is useful as an intermediate step to add a "zone_category" field
-  to our Zone structs.  Because we expand the zone groups in the actual
-  headers into individual zone codes, we can use the result of this
-  function.
-
-  ## Example
-
-  In the basic case this maps each name to the column range:
-
-      iex> Mix.Tasks.Parcel.IngestLandUseTable.sparsify_unique([
-      ...>   "a",
-      ...>   "",
-      ...>   "",
-      ...>   "b",
-      ...>   "c"
-      ...> ])
-      %{"a" => [2, 1, 0], "b" => [3], "c" => [4]}
-  """
-  def sparsify_unique(list, empty \\ "") do
-    {sparsified, _} = Stream.with_index(list)
-    |> Enum.reduce(
-      {
-        %{}, # Accumulator, e.g. %{"Residential" => [2, 1]}
-        nil
-      },
-      fn({new_category, index}, {acc, current_category}) ->
-        case {new_category, current_category} do
-          {^empty, current_category} when current_category != nil ->
-            # Add the index to the old entry
-            acc = %{acc | current_category => [index | acc[current_category]]}
-            {acc, current_category}
-          # We've got a new name, e.g. "Mixed Use". Create a new entry
-          {new_category, _} ->
-            acc = Map.put(acc, new_category, [index])
-            {acc, new_category}
-        end
-      end
-    )
-    sparsified
   end
 
   @doc ~S"""
