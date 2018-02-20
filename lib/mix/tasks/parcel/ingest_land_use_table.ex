@@ -1,7 +1,21 @@
 defmodule Mix.Tasks.Parcel.IngestLandUseTable do
+  @moduledoc ~S"""
+  Ingest the Nashville land use table as a CSV
+
+  This translates a table of zoning code land use conditions provided by
+  Nashville into a list of `Parcel.Domain.ZoningDistrictLandUseCondition`s.
+  In the future this will write to a file or database, but for now it
+  just returns the data as a list.
+
+  A version of the Nashville land use table can be downloaded as a CSV from
+  https://docs.google.com/spreadsheets/d/1O0Qc8nErSbstCiWpbpRQ0tPMS0NukCmcov2-s_u8Umg/
+  This spreadsheet has a peculiar format described in detail in the source code
+  of this task.
+  """
+
   use Mix.Task
 
-  @shortdoc "Transform the Nashville.gov land use spreadsheet into a list of zone land use conditions"
+  @shortdoc "Ingest the Nashville land use table as a CSV"
 
   # The input data is written such that not every zone gets it's own column
   #
