@@ -88,6 +88,8 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
 
     Mix.shell.info "Zone categories: #{ inspect zone_category_to_columns}"
 
+    Mix.shell.info "Generating zone land use conditions..."
+
     land_use_condition_lines = Enum.slice(lines, 5..-1)
     |> Stream.filter(&(not land_use_category?(&1)))
 
@@ -95,6 +97,16 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
       land_use_condition_lines,
       &(get_zoning_district_land_use_conditions(&1, column_zone_codes))
     )
+
+    Mix.shell.info(
+      "Generated #{length(zone_land_use_conditions)} zone land use conditions"
+    )
+  end
+
+  @doc ~S"""
+  Transform the table into a header of individual codes
+  """
+  def expand_zone_groups_into_individual_codes(lines) do
   end
 
   @doc ~S"""
@@ -289,8 +301,56 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
 
   @doc ~S"""
   Return a list of `Parcel.Domain.ZoningDistrictLandUseCondition` for the line
+
+  A `line` should comes in the format
+
+    "Manufacturing, light", "A", "P", "", "PC", ...
+
+  and the `column_zone_codes` include a list of Zoning District codes covered
+  for each column (with the first blank):
+
+    [nil, ["AG, "AR2a"], ["SP"], ...]
+
+  ## Example
+
+  The result is a flat list of `Parcel.Domain.ZoningDistrictLandUseCondition`.
+  Empty condition codes are translated to "NP" (Not permitted).
+
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.get_zoning_district_land_use_conditions(
+      ...>   ["Microbrewery", "A", "P", "", "PC"],
+      ...>   [nil, ["North", "South"], ["West"], ["MUL", "MUL-A", "ON"], ["OL"]]
+      ...> )
+      [
+        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "North", land_use: "Microbrewery", land_use_condition: "A"},
+        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "South", land_use: "Microbrewery", land_use_condition: "A"},
+        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "West", land_use: "Microbrewery", land_use_condition: "P"},
+        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "MUL", land_use: "Microbrewery", land_use_condition: "NP"},
+        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "MUL-A", land_use: "Microbrewery", land_use_condition: "NP"},
+        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "ON", land_use: "Microbrewery", land_use_condition: "NP"},
+        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "OL", land_use: "Microbrewery", land_use_condition: "PC"}
+      ]
   """
-  def get_zoning_district_land_use_conditions(line, column_zone_codes) do
-    {line, column_zone_codes}
+  def get_zoning_district_land_use_conditions(line, columns_zone_codes) do
+    alias Parcel.Domain.ZoningDistrictLandUseCondition, as: ZoningCondition
+
+    [land_use | condition_codes ] = line
+    [_ | columns_zone_codes ] = columns_zone_codes
+
+    Stream.zip(condition_codes, columns_zone_codes)
+    |> Enum.flat_map(fn {condition_code, column_zone_codes} ->
+      condition_code = case condition_code do
+        "" -> "NP"
+        _ -> condition_code
+      end
+      # TODO: The field values should actually be objects but hacking it for now
+      Enum.map(
+        column_zone_codes, fn zone_code ->
+          %ZoningCondition{
+            land_use: land_use,
+            land_use_condition: condition_code,
+            zoning_district: zone_code,
+          }
+        end)
+    end)
   end
 end
