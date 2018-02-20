@@ -121,27 +121,29 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
   Rows at index 2 through 4 include identifiers of groups of zones:
 
     ,          ,....
-    Agriculture, Residential,....
-    AG   ,  RS280   , ...
-    and   , thru   , ...
-    AR2a  , RS3.75 , ...
+    ,Agriculture, Residential,....
+    ,AG   ,  RS280   , ...
+    ,and   , thru   , ...
+    ,AR2a  , RS3.75 , ...
 
   We translate these three lines into a single list of groups, e.g.
   ["AG and AR2a", "RS280 thru RS3.75"].  This can be used with
   @zone_groups_to_zone_codes to translate the table into information per
   zone code, even though we only receive information per zone group.
 
-  Note that these come back preserving the order of the columns they are in.
+  Note that these come back preserving the order of the columns they are in,
+  except that they are offset one to the left.  The first column in the table
+  doesn't contain useful zone group information and is dropped.
 
   ## Examples
-  A basic example:
+  A basic example that ignores the first column and joins the data predictably:
 
       iex> Mix.Tasks.Parcel.IngestLandUseTable.get_zone_groups([
-      ...>   ["Ignore", "these"],
+      ...>   ["Ignore", "all", "these"],
       ...>   ["First", "two", "rows"],
-      ...>   ["AG", "RS80"],
-      ...>   ["and", "thru"],
-      ...>   ["AR2a", "RS3.75-A"]
+      ...>   ["", "AG", "RS80"],
+      ...>   ["", "and", "thru"],
+      ...>   ["", "AR2a", "RS3.75-A"]
       ...> ])
       ["AG and AR2a", "RS80 thru RS3.75-A"]
 
@@ -149,11 +151,11 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
   up two lines
 
       iex> Mix.Tasks.Parcel.IngestLandUseTable.get_zone_groups([
-      ...>   ["Ignore", "these"],
-      ...>   ["two", "rows"],
-      ...>   ["M", ""],
-      ...>   ["H", "O"],
-      ...>   ["P", "N"]
+      ...>   ["Ignore", "all", "these"],
+      ...>   ["first", "two", "rows"],
+      ...>   ["", "M", ""],
+      ...>   ["", "H", "O"],
+      ...>   ["", "P", "N"]
       ...> ])
       ["M H P", "O N"]
   """
@@ -161,6 +163,7 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
     zone_group_lines = Enum.slice lines, 2..4
 
     Stream.zip(zone_group_lines)
+      |> Stream.drop(1)
       |> Stream.map(&Tuple.to_list/1)
       |> Stream.map(fn(zone_group_parts) -> Enum.join(zone_group_parts, " ") end)
       |> Enum.map(&String.trim/1)
@@ -179,20 +182,9 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
       ...> "O N"  # real
       ...> ])
       ["GO", "PREDS"]
-
-  This ignores the special case of an empty string (""). Right now we leave in
-  the empty string as the first item to preserve the column index of the zone
-  groups.
-
-      iex> Mix.Tasks.Parcel.IngestLandUseTable.get_unmapped_zone_groups([
-      ...>  "WINGARDIUM",
-      ...>  "LEVIOSA",
-      ...>  ""   # ignored
-      ...> ])
-      ["WINGARDIUM", "LEVIOSA"]
   """
   def get_unmapped_zone_groups(zone_groups) do
-    actualy_zone_groups = zone_groups -- [""]
+    actualy_zone_groups = zone_groups
 
     actualy_zone_groups -- Map.keys(@zone_groups_to_zone_codes)
   end
@@ -227,19 +219,6 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
       ...>   "c"
       ...> ])
       %{"a" => [2, 1, 0], "b" => [3], "c" => [4]}
-
-  If the first elements are the empty value, it treats the empty value as
-  it's own unique value, then continues compressing after the first non-unique
-  value
-
-      iex> Mix.Tasks.Parcel.IngestLandUseTable.sparsify_unique([
-      ...>   "",
-      ...>   "",
-      ...>   "a",
-      ...>   "",
-      ...>   "b"
-      ...> ])
-      %{"" => [1, 0], "a" => [3, 2], "b" => [4]}
   """
   def sparsify_unique(list, empty \\ "") do
     {sparsified, _} = Stream.with_index(list)
@@ -312,9 +291,9 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
     "Manufacturing, light", "A", "P", "", "PC", ...
 
   and the `column_zone_codes` include a list of Zoning District codes covered
-  for each column (with the first blank):
+  for each column:
 
-    [nil, ["AG, "AR2a"], ["SP"], ...]
+    [["AG, "AR2a"], ["SP"], ...]
 
   ## Example
 
@@ -323,7 +302,7 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
 
       iex> Mix.Tasks.Parcel.IngestLandUseTable.get_zoning_district_land_use_conditions(
       ...>   ["Microbrewery", "A", "P", "", "PC"],
-      ...>   [nil, ["North", "South"], ["West"], ["MUL", "MUL-A", "ON"], ["OL"]]
+      ...>   [["North", "South"], ["West"], ["MUL", "MUL-A", "ON"], ["OL"]]
       ...> )
       [
         %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "North", land_use: "Microbrewery", land_use_condition: "A"},
@@ -339,7 +318,6 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
     alias Parcel.Domain.ZoningDistrictLandUseCondition, as: ZoningCondition
 
     [land_use | condition_codes ] = line
-    [_ | columns_zone_codes ] = columns_zone_codes
 
     Stream.zip(condition_codes, columns_zone_codes)
     |> Enum.flat_map(fn {condition_code, column_zone_codes} ->
