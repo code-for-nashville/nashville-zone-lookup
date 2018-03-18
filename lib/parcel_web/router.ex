@@ -15,6 +15,11 @@ defmodule ParcelWeb.Router do
 
   scope "/api", ParcelWeb do
     pipe_through :api
+
+    # /landuses has a required "address" query param
+    get "/landuses", LandUsesController, :index
+
+    get "/landusecategories", LandUseCategoriesController, :index
   end
 
   scope "/", ParcelWeb do
