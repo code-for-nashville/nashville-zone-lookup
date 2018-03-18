@@ -12,15 +12,16 @@ export const getters = {
 
 export const actions = {
   fetchAllIntendedUses ({ commit }) {
-    ParcelApiClient
-      .getAllIntendedUses()
-      .then((response) => {
-        const intendedUses = response.data['intended_uses']
-        commit(types.GET_INTENDED_USES_SUCCESS, { intendedUses })
-      })
-      .catch(() => {
-        commit(types.GET_INTENDED_USES_FAILURE)
-      })
+    const mockUses = [
+      'party',
+      'party',
+      'join us',
+      'join us'
+    ]
+
+    commit(types.GET_INTENDED_USES_SUCCESS, mockUses)
+
+    return mockUses
   },
 
   fetchUsesForAddress ({ commit }, address) {
@@ -39,7 +40,7 @@ const mutations = {
   [types.GET_USES_FOR_ADDRESS_SUCCESS] (state, usesForAddress) {
     state.usesForAddress = usesForAddress
   },
-  [types.GET_INTENDED_USES_SUCCESS] (state, { intendedUses }) {
+  [types.GET_INTENDED_USES_SUCCESS] (state, intendedUses) {
     state.intendedUses = intendedUses
   },
   [types.GET_INTENDED_USES_FAILURE] (state) {

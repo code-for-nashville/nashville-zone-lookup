@@ -12,7 +12,7 @@
 
           <use-dropdown
             @selectedUse="onUseSelected"
-            :uses="[ 'party', 'party', 'other stuff' ]">
+            :uses="intendedUses">
           </use-dropdown>
 
         </div>
@@ -57,7 +57,8 @@
     },
     methods: {
       ...mapActions({
-        fetchAllIntendedUses: 'intendedUses/fetchAllIntendedUses'
+        fetchAllIntendedUses: 'intendedUses/fetchAllIntendedUses',
+        fetchUsesForAddress: 'intendedUses/fetchUsesForAddress'
       }),
 
       onUseSelected (use) {
@@ -66,7 +67,7 @@
 
       onAddressChanged: debounce(address => {
         console.info(address)
-      }, 1000)
+      }, 450)
     },
     components: {
       SearchResults,
