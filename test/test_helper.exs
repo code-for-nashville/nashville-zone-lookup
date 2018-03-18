@@ -1,4 +1,7 @@
 ExUnit.start()
 
-Mox.defmock(Parcel.NashvilleMetroApi.AddressCandidatesApi.MockClient,
-  for: Parcel.NashvilleMetroApi.AddressCandidatesApi.Client)
+# Exclude all tests that touch external systems from running by default
+ExUnit.configure exclude: [external: true]
+
+Mox.defmock(Parcel.NashvilleArcgisApi.MockClient,
+  for: Parcel.NashvilleArcgisApi.Client)

@@ -15,9 +15,6 @@ defmodule ParcelWeb.Router do
 
   scope "/api", ParcelWeb do
     pipe_through :api
-
-    get "/address-candidates", AddressCandidateController, :index
-    get "/intended-uses", IntendedUseController, :index
   end
 
   scope "/", ParcelWeb do

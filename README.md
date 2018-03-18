@@ -30,10 +30,11 @@ To build and run this app for production:
 - Run the Phoenix server `mix phx.server`.
 
 ## Testing
-To test the backend:
+To unit test the backend:
 - Install the Mix dependencies `mix deps.get`.
 - Compile the project `mix compile`.
 - Run tests `mix test`.
+- Run tests against external systems `mix test --include external`.
 
 To test the frontend:
 - Navigate to frontend app `cd frontend`.

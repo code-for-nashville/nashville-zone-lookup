@@ -7,7 +7,7 @@ config :parcel, ParcelWeb.Endpoint,
   server: false
 
 # configures mock address candidate API to use for testing
-config :parcel, :address_candidates_api, Parcel.NashvilleMetroApi.AddressCandidatesApi.MockClient
+config :parcel, :nashville_arc_gis_api, Parcel.NashvilleArcgisApi.MockClient
 
 # Print only warnings and errors during test
 config :logger, level: :warn
