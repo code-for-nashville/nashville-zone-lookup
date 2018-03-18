@@ -9,28 +9,12 @@
         <button class="btn btn-secondary textHeader ml-auto col-3" type="button">Parcel</button>
 
         <div class="ml-auto col-8">
-          <div class="headerDropdownContainer dropdown primaryTextColor">
 
-            <button class="headerDropdown btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Everything
-              <i class="primaryTextColor fa fa-caret-down float-right" aria-hidden="false"></i>
-            </button>
+          <use-dropdown
+            @selectedUse="onUseSelected"
+            :uses="[ 'party', 'party', 'other stuff' ]">
+          </use-dropdown>
 
-            <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
-              <li v-for="intendedUse in intendedUses">
-                <a class="dropdown-item" href="#">{{ intendedUse.name }}</a>
-              </li>
-
-              <div class="dropdown-divider"></div>
-
-              <li>
-                <a class="gotom" href="#">
-                  <i class="fa fa-cloud-download" aria-hidden="false"></i>Download PDF
-                </a>
-              </li>
-
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -55,6 +39,7 @@
 <script>
   import { mapGetters, mapActions } from 'vuex'
   import SearchResults from './SearchResults.vue'
+  import UseDropdown from './UseDropdown.vue'
 
   export default {
     computed: {
@@ -65,10 +50,15 @@
     methods: {
       ...mapActions({
         fetchAllIntendedUses: 'intendedUses/fetchAllIntendedUses'
-      })
+      }),
+
+      onUseSelected (use) {
+        console.info(use)
+      }
     },
     components: {
-      SearchResults
+      SearchResults,
+      UseDropdown
     },
     created () {
       this.fetchAllIntendedUses()
@@ -125,69 +115,6 @@
   box-shadow: none;
 }
 
-.headerDropdownContainer {
-  float: right;
-}
-
-.headerDropdown {
-  min-width: 164px;
-  height: 10vh;
-  min-height: 4rem;
-    margin-right: 0rem;
-    padding: .25rem 1.5rem;
-    text-align: left;
-    border: none;
-    border-radius: initial;
-  background-color: rgba(255, 255, 255, 0.19);
-}
-
-  .headerDropdown ~ .dropdown-menu {
-    background-color: #435572;
-    color: #5C6C84;
-  }
-
-  .headerDropdown ~ .dropdown-menu a {
-    padding: 3vh 1.5rem;
-    font-size: 1rem;
-    color: #FFF;
-  }
-
-    .headerDropdown ~ .dropdown-menu a:hover {
-      background-color: #2F4263;
-    }
-
-  .headerDropdown ~ .show {
-    top: -2px;
-    left: 0px;
-    width: 164px;
-    margin: 0;
-    padding-top: 0;
-    border-radius: 0;
-    border: none;
-  }
-
-  .headerDropdown ~ .fa-caret-down {
-    text-align: right;
-  }
-
-.scrollable-menu {
-    height: auto;
-    max-height: 300px;
-    overflow-x: hidden;
-}
-
-.dropdown-toggle::after {
-  border: none;
-}
-
-.show >.headerDropdown.dropdown-toggle {
-  background-color: #435572;
-}
-
-.fa-cloud-download {
-  margin-right: 0.5rem;
-  color: #FFF;
-}
 
 #addressContentContainer {
 
@@ -212,23 +139,9 @@ h2 {
     border-radius: 0.3rem;
     box-shadow: 0px 0px 1px 0.25px rgba(204,204,204,1);
 }
-
 @media (min-width: 575px) {
-  .headerDropdown {
-    min-width: 18rem;
-  }
-
   .headerContainer img {
     height: initial;
-  }
-
-  .headerDropdown ~ .show {
-    top: -2px;
-    left: 0px;
-    min-width: 18rem;
-    margin: 0;
-    border-radius: 0;
-    border: none;
   }
 }
 
@@ -268,15 +181,6 @@ h2 {
       font-size: 2.2rem;
   }
 
-  .headerDropdown {
-      width: 24rem;
-    height: 5rem;
-  }
-
-  .headerDropdown ~ .show {
-    min-width: 24rem;
-  }
-
   #addressContentContainer {
       margin-top: 4.5%;
   }
@@ -289,10 +193,6 @@ h2 {
 @media (min-width: 1440px) {
   .textHeader {
       padding-left: 2.5rem;
-  }
-
-  .headerDropdown {
-      margin-right: 7rem;
   }
 
   #addressContentContainer {
