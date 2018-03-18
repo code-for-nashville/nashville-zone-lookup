@@ -32,7 +32,7 @@
           type="text"
           name=""
           id="addressInput"
-          @input="onAddressChanged($event.target.value)",
+          @input="onAddressChanged($event.target.value)"
           placeholder="1700 3rd Ave N, 37208 or 1238817">
 
       </div>
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+  import { debounce } from 'lodash'
   import { mapGetters, mapActions } from 'vuex'
   import SearchResults from './SearchResults.vue'
   import UseDropdown from './UseDropdown.vue'
@@ -63,9 +64,9 @@
         console.info(use)
       },
 
-      onAddressChanged (address) {
+      onAddressChanged: debounce(address => {
         console.info(address)
-      }
+      }, 1000)
     },
     components: {
       SearchResults,
