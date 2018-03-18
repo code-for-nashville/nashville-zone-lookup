@@ -5,55 +5,56 @@
         <div class="headerImageContainer primaryBackgroundColor">
           <img src="../assets/nashville-skyline.png">
         </div>
+
         <button class="btn btn-secondary textHeader ml-auto col-3" type="button">Parcel</button>
+
         <div class="ml-auto col-8">
           <div class="headerDropdownContainer dropdown primaryTextColor">
+
             <button class="headerDropdown btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Everything
               <i class="primaryTextColor fa fa-caret-down float-right" aria-hidden="false"></i>
             </button>
+
             <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
               <li v-for="intendedUse in intendedUses">
                 <a class="dropdown-item" href="#">{{ intendedUse.name }}</a>
               </li>
+
               <div class="dropdown-divider"></div>
+
               <li>
                 <a class="gotom" href="#">
                   <i class="fa fa-cloud-download" aria-hidden="false"></i>Download PDF
                 </a>
               </li>
+
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <div id="addressContentContainer" class="no-gutters row justify-content-center">
       <div class="col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4">
         <h2>Enter street address<br> or zoning code</h2>
       </div>
+
       <div class="w-100"></div>
+
       <div id="addressInputContainer" class="col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4">
         <input type="text" name="" id="addressInput" placeholder="1700 3rd Ave N, 37208 or 1238817">
       </div>
     </div>
-    <div id="searchResultsContainer" class="no-gutters row justify-content-center">
-      <div id="searchResultsHeader" class="col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4">
-        <div class="col-10 clearfix">
-          <div class="categoryColor"></div>
-          <div class="zoningCategory">Industrial, IDW</div>
-        </div>
-        <div class="col-10">
-          <p class="zoningDescription">
-            Industrial Warehousing/Distribution, intended for a wide range of warehousing, wholesaling, and bulk distribution uses.
-          </p>
-        </div>
-      </div>
-    </div>
+
+    <search-results :results="[]"></search-results>
+
   </div>
 </template>
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
+  import SearchResults from './SearchResults.vue'
 
   export default {
     computed: {
@@ -65,6 +66,9 @@
       ...mapActions({
         fetchAllIntendedUses: 'intendedUses/fetchAllIntendedUses'
       })
+    },
+    components: {
+      SearchResults
     },
     created () {
       this.fetchAllIntendedUses()
@@ -189,29 +193,6 @@
 
 }
 
-.categoryColor {
-    float: left;
-    display: inline-block;
-    height: 18px;
-    width: 18px;
-    margin-top: 0.85rem;
-    margin-right: 0.5rem;
-    border-radius: 50%;
-    background-color: blue;
-}
-
-.zoningCategory {
-    float: left;
-    display: inline-block;
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 0.5rem;
-}
-
-.zoningDescription {
-  text-align: left;
-}
-
 h2 {
   margin-top: 0.5rem;
     text-align: left;
@@ -230,10 +211,6 @@ h2 {
     border: 1px solid #ccc;
     border-radius: 0.3rem;
     box-shadow: 0px 0px 1px 0.25px rgba(204,204,204,1);
-}
-
-#searchResultsHeader {
-  height: 5rem;
 }
 
 @media (min-width: 575px) {
