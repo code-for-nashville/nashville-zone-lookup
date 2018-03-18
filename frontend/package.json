@@ -9,9 +9,8 @@
     "start": "node build/dev-server.js",
     "build": "node build/build.js && cp dist/static/js/*.js dist/static/js/*.map ../priv/static/js/. && cp dist/static/css/*.css dist/static/css/*.map ../priv/static/css/.",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
-    "e2e": "node test/e2e/runner.js",
-    "test": "npm run unit && npm run e2e",
-    "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
+    "test": "npm run unit",
+    "lint": "eslint --ext .js,.vue src test/unit/specs"
   },
   "dependencies": {
     "axios": "^0.17.0",
