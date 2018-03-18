@@ -14,15 +14,12 @@ config :parcel, ParcelWeb.Endpoint,
            adapter: Phoenix.PubSub.PG2]
 
 # configures address candidate API to use
-config :parcel, :address_candidates_api, Parcel.NashvilleMetroApi.AddressCandidatesApi.HttpClient
+config :parcel, :nashville_arc_gis_api, Parcel.NashvilleArcgisApi.HttpClient
 
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
-
-config :parcel, Parcel.NashvilleMetroApi.AddressCandidatesApi.HttpClient,
-  max_locations: 5
 
 config :parcel, :intended_uses,
   [

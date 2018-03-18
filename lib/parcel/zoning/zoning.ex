@@ -1,19 +1,19 @@
 defmodule Parcel.Zoning do
   @moduledoc """
-  The Zoning context.
+  Find the land use for a given address
   """
 
-  @address_candidates_api Application.get_env(:parcel, :address_candidates_api)
-  @intended_uses Application.get_env(:parcel, :intended_uses)
-
-  @doc """
-  Returns the list of address candidates.
-  """
-  def list_address_candidates(address),
-    do: @address_candidates_api.find_address_candidates(address)
+  @nashville_arc_gis_api Application.get_env(:parcel, :nashville_arc_gis_api)
 
   @doc """
-  Returns the list of intended uses.
+  Returns an object representing the land use for a geographic point.
   """
-  def list_intended_uses, do: {:ok, @intended_uses}
+  def land_use_summary(address) do
+    {:ok, point} = @nashville_arc_gis_api.geocode_address(address)
+    {:ok, zone_code} = @nashville_arc_gis_api.get_zone(point)
+    %{
+      zone_code: zone_code,
+      land_uses: [],
+    }
+  end
 end
