@@ -30,7 +30,7 @@ export const actions = {
         // TODO return uses extracted from repsonse
         return []
       })
-      .then(usesForAddress=> commit(types.GET_USES_FOR_ADDRESS_SUCCESS, usesForAddress))
+      .then(usesForAddress => commit(types.GET_USES_FOR_ADDRESS_SUCCESS, usesForAddress))
       .catch(err => console.error(err))
   }
 }
