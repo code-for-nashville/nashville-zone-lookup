@@ -27,7 +27,14 @@
       <div class="w-100"></div>
 
       <div id="addressInputContainer" class="col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4">
-        <input type="text" name="" id="addressInput" placeholder="1700 3rd Ave N, 37208 or 1238817">
+
+        <input
+          type="text"
+          name=""
+          id="addressInput"
+          @input="onAddressChanged($event.target.value)",
+          placeholder="1700 3rd Ave N, 37208 or 1238817">
+
       </div>
     </div>
 
@@ -54,6 +61,10 @@
 
       onUseSelected (use) {
         console.info(use)
+      },
+
+      onAddressChanged (address) {
+        console.info(address)
       }
     },
     components: {
