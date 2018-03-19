@@ -12,6 +12,32 @@ class ParcelApiClient {
   getAllIntendedUses () {
     return this.client.get('/intended-uses')
   }
+
+/* /landuses/?address="My Addresss" - Return an object:
+ *  {
+ *    zone: {
+ *      code: "",
+ *      description: "",
+ *      category: "",
+ *    },
+ *    land_uses: [
+ *      {
+ *        category: "Residential",
+ *        description: "Build a house for your family less than 50K sqft",
+ *        condition_code: "P"  # Permitted by right
+ *      },
+ *      {
+ *        category: "Residential",
+ *        description: "Build a house for your family larger than 50K sqft",
+ *        condition_code: "NP"  # Not permitted
+ *      },
+ *      ...
+ *    ]
+ *  }
+ */
+  getUsesForAddress (address) {
+    return this.client.get('/landuses', { params: { address } })
+  }
 }
 
 export default new ParcelApiClient('http://localhost:4000/api')

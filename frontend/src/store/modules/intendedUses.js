@@ -2,7 +2,8 @@ import ParcelApiClient from '@/api/parcelApiClient'
 import * as types from '../mutationTypes'
 
 const state = {
-  intendedUses: []
+  intendedUses: [],
+  usesForAddress: []
 }
 
 export const getters = {
@@ -11,20 +12,35 @@ export const getters = {
 
 export const actions = {
   fetchAllIntendedUses ({ commit }) {
-    ParcelApiClient
-      .getAllIntendedUses()
-      .then((response) => {
-        const intendedUses = response.data['intended_uses']
-        commit(types.GET_INTENDED_USES_SUCCESS, { intendedUses })
+    const mockUses = [
+      'party',
+      'party',
+      'join us',
+      'join us'
+    ]
+
+    commit(types.GET_INTENDED_USES_SUCCESS, mockUses)
+
+    return mockUses
+  },
+
+  fetchUsesForAddress ({ commit }, address) {
+    return ParcelApiClient
+      .getUsesForAddress(address)
+      .then(resp => {
+        // TODO return uses extracted from repsonse
+        return []
       })
-      .catch(() => {
-        commit(types.GET_INTENDED_USES_FAILURE)
-      })
+      .then(usesForAddress => commit(types.GET_USES_FOR_ADDRESS_SUCCESS, usesForAddress))
+      .catch(err => console.error(err))
   }
 }
 
 const mutations = {
-  [types.GET_INTENDED_USES_SUCCESS] (state, { intendedUses }) {
+  [types.GET_USES_FOR_ADDRESS_SUCCESS] (state, usesForAddress) {
+    state.usesForAddress = usesForAddress
+  },
+  [types.GET_INTENDED_USES_SUCCESS] (state, intendedUses) {
     state.intendedUses = intendedUses
   },
   [types.GET_INTENDED_USES_FAILURE] (state) {
