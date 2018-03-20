@@ -22,6 +22,6 @@ defmodule ParcelWeb.LandUseCategoriesController do
   end
 
   def index(conn, _params) do
-    render(conn, "index.json", land_use_categories: canned_result)
+    json conn, canned_result()
   end
 end

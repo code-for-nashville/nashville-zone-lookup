@@ -13,7 +13,7 @@ defmodule ParcelWeb.Router do
     plug :put_secure_browser_headers
   end
 
-  scope "/api", ParcelWeb do
+  scope "/api", ParcelWeb, as: :api do
     pipe_through :api
 
     # /landuses has a required "address" query param

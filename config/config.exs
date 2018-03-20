@@ -21,23 +21,6 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-config :parcel, :intended_uses,
-  [
-    %{id: 1, name: "Residential Uses"},
-    %{id: 2, name: "Institutional Uses"},
-    %{id: 3, name: "Educational Uses"},
-    %{id: 4, name: "Office Uses"},
-    %{id: 5, name: "Medical Uses"},
-    %{id: 6, name: "Commercial Uses"},
-    %{id: 7, name: "Communication Uses"},
-    %{id: 8, name: "Industrial Uses"},
-    %{id: 9, name: "Transportation Uses"},
-    %{id: 10, name: "Utility Uses"},
-    %{id: 11, name: "Waste Management Uses"},
-    %{id: 12, name: "Recreation and Entertainment Uses"},
-    %{id: 13, name: "Other Uses"}
-  ]
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

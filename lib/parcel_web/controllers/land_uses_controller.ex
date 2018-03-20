@@ -1,6 +1,8 @@
 defmodule ParcelWeb.LandUsesController do
   use ParcelWeb, :controller
 
+  action_fallback ParcelWeb.FallbackController
+
   def canned_result do
     %{
       "zone" => %{
@@ -29,8 +31,8 @@ defmodule ParcelWeb.LandUsesController do
   end
 
   def index(conn, %{"address" => address}) do
-    render(conn, "index.json", land_uses_report: canned_result)
+    json conn, canned_result()
   end
 
-  def index(_conn, _params), do: { :error,  :bad_request, "Missing address parameter."}
+  def index(_conn, _params), do: {:error, :bad_request, "Missing address parameter."}
 end
