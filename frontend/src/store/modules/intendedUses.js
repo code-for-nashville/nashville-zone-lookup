@@ -12,16 +12,8 @@ export const getters = {
 
 export const actions = {
   fetchAllIntendedUses ({ commit }) {
-    const mockUses = [
-      'party',
-      'party',
-      'join us',
-      'join us'
-    ]
-
-    commit(types.GET_INTENDED_USES_SUCCESS, mockUses)
-
-    return mockUses
+    return ParcelApiClient.getAllIntendedUses()
+      .then(resp => commit(types.GET_INTENDED_USES_SUCCESS, resp.data))
   },
 
   fetchUsesForAddress ({ commit }, address) {
