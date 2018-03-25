@@ -9,33 +9,20 @@ class ParcelApiClient {
     })
   }
 
-  getAllIntendedUses () {
+  getLandUseCategories () {
     return this.client.get('/landusecategories')
   }
 
-/* /landuses/?address="My Addresss" - Return an object:
- *  {
- *    zone: {
- *      code: "",
- *      description: "",
- *      category: "",
- *    },
- *    land_uses: [
- *      {
- *        category: "Residential",
- *        description: "Build a house for your family less than 50K sqft",
- *        condition_code: "P"  # Permitted by right
- *      },
- *      {
- *        category: "Residential",
- *        description: "Build a house for your family larger than 50K sqft",
- *        condition_code: "NP"  # Not permitted
- *      },
- *      ...
- *    ]
- *  }
- */
-  getUsesForAddress (address) {
+  /* /landuses/?address=My%20Addresss schema:
+  {
+    "zone": {"code", "category", "description"},
+    "land_uses": [
+      {"category", "name", "condition": {"code", "info_link", "description", "category"}}
+    ]
+  }
+
+  */
+  getLandUseSummaryForAddress (address) {
     return this.client.get('/landuses', { params: { address } })
   }
 }

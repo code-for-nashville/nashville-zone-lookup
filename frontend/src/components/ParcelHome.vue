@@ -10,10 +10,10 @@
 
         <div class="ml-auto col-8">
 
-          <use-dropdown
-            @selectedUse="onUseSelected"
-            :uses="intendedUses">
-          </use-dropdown>
+          <use-category-dropdown
+            @selectedUse="onUseCategorySelected"
+            :uses="landUseCategories">
+          </use-category-dropdown>
 
         </div>
       </div>
@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <search-results :results="results"></search-results>
+    <land-use-summary v-if="summary" :summary="summary"></land-use-summary>
 
   </div>
 </template>
@@ -46,8 +46,8 @@
 <script>
   import { debounce } from 'lodash'
   import { mapGetters, mapActions, mapState } from 'vuex'
-  import SearchResults from './SearchResults.vue'
-  import UseDropdown from './UseDropdown.vue'
+  import LandUseSummary from './LandUseSummary.vue'
+  import UseCategoryDropdown from './UseCategoryDropdown.vue'
 
   export default {
     data () {
@@ -55,38 +55,36 @@
     },
 
     computed: {
-      ...mapState('intendedUses', { results: state => state.usesForAddress }),
+      ...mapState('parcel', { summary: state => state.landUseSummary }),
 
       ...mapGetters({
-        intendedUses: 'intendedUses/intendedUses'
+        landUseCategories: 'parcel/landUseCategories'
       })
     },
 
     methods: {
       ...mapActions({
-        fetchAllIntendedUses: 'intendedUses/fetchAllIntendedUses',
-        fetchUsesForAddress: 'intendedUses/fetchUsesForAddress'
+        fetchLandUseCategories: 'parcel/fetchLandUseCategories',
+        fetchLandUseSummaryForAddress: 'parcel/fetchLandUseSummaryForAddress'
       }),
 
-      onUseSelected (use) {
+      onUseCategorySelected (use) {
         console.info(use)
-        // TODO filter search results down to use category of interest
+        // TODO filter search summary land uses down to use category of interest
       },
 
       onAddressChanged: debounce(function (address) {
-        console.info(address)
-
-        this.fetchUsesForAddress(address)
+        return this.fetchLandUseSummaryForAddress(address)
       }, 450)
     },
 
     components: {
-      SearchResults,
-      UseDropdown
+      LandUseSummary,
+      UseCategoryDropdown
     },
 
     created () {
-      this.fetchAllIntendedUses()
+      this.fetchLandUseCategories()
     }
 }
 </script>
