@@ -8,8 +8,9 @@ defmodule ParcelWeb.LandUsesControllerTest do
   end
 
   test "Returns canned results", %{conn: conn} do
-    conn = get(conn, api_land_uses_path(conn, :index, address: "500 Interstate Blvd S, Suite 300"))
+    conn =
+      get(conn, api_land_uses_path(conn, :index, address: "500 Interstate Blvd S, Suite 300"))
 
-    assert json_response(conn, 200) == ParcelWeb.LandUsesController.canned_result
+    assert json_response(conn, 200) == ParcelWeb.LandUsesController.canned_result()
   end
 end

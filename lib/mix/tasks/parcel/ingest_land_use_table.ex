@@ -3,7 +3,7 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
   Ingest the Nashville land use table as a CSV
 
   This translates a table of zoning code land use conditions provided by
-  Nashville into a list of `Parcel.Domain.ZoningDistrictLandUseCondition`s.
+  Nashville into a list of `ZoningDistrictLandUseCondition`s.
   In the future this will write to a file or database, but for now it
   just returns the data as a list.
 
@@ -14,6 +14,8 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
   """
 
   use Mix.Task
+  alias Parcel.Repo
+  alias Parcel.Zoning.{LandUse, ZoningDistrict, ZoningDistrictLandUseCondition}
 
   @shortdoc "Ingest the Nashville land use table as a CSV"
 
@@ -27,7 +29,20 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
   # list of zones they include ("AG", "AR2a").
   @zone_groups_to_zone_codes %{
     "AG and AR2a" => ["AG", "AR2a"],
-    "RS80 thru RS3.75-A" => ["RS40", "RS30", "RS20", "RS15", "RS10", "RS7.5", "RS7.5-A", "RS5", "RS5-A", "RS3.75", "RS3.75-A"],
+    "RS80 thru RS3.75-A" => [
+      "RS80",
+      "RS40",
+      "RS30",
+      "RS20",
+      "RS15",
+      "RS10",
+      "RS7.5",
+      "RS7.5-A",
+      "RS5",
+      "RS5-A",
+      "RS3.75",
+      "RS3.75-A"
+    ],
     "R80 thru R6-A" => ["R80", "R40", "R30", "R20", "R15", "R10", "R8", "R8-A", "R6", "R6-A"],
     "RM2 thru RM20-A" => ["RM2", "RM4", "RM6", "RM9", "RM9-A", "RM15", "RM15-A", "RM20", "RM20-A"],
     "RM40 thru RM100-A" => ["RM40", "RM40-A", "RM60", "RM60-A", "RM80-A", "RM100-A"],
@@ -60,64 +75,117 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
   }
 
   def run(args) do
-    {opts, [filepath]} = OptionParser.parse!(
-      args,
-      strict: [verbose: :boolean]
-    )
+    {opts, [filepath]} =
+      OptionParser.parse!(
+        args,
+        strict: [verbose: :boolean]
+      )
+
     verbose = Keyword.get(opts, :verbose, false)
 
-    shell = case verbose do
-      true -> Mix.Shell.IO
-      false -> Mix.Shell.Quiet
-    end
+    shell =
+      case verbose do
+        true -> Mix.Shell.IO
+        false -> Mix.Shell.Quiet
+      end
 
-    shell.info "Loading land use table..."
+    shell.info("Starting app...")
 
-    lines = File.stream!(filepath)
-    |> CSV.decode!(strip_fields: true)
-    |> Enum.to_list
+    Mix.Task.run("app.start")
 
-    shell.info "Loaded #{length(lines)} lines"
+    shell.info("Loading land use table...")
 
-    shell.info "Reconstructing zone groups..."
+    lines =
+      File.stream!(filepath)
+      |> CSV.decode!(strip_fields: true)
+      |> Enum.to_list()
 
-    ordered_zone_groups = get_zone_groups lines
+    {headers, data} = Enum.split(lines, 5)
 
-    shell.info "Loaded #{length(ordered_zone_groups)} zone groups"
+    shell.info("Loaded #{length(lines)} lines")
 
-    shell.info "Checking for unmapped zone groups..."
+    shell.info("Reconstructing zone groups...")
 
-    unmapped_zone_groups = get_unmapped_zone_groups ordered_zone_groups
+    ordered_zone_groups = get_zone_groups(headers)
+
+    shell.info("Loaded #{length(ordered_zone_groups)} zone groups")
+
+    shell.info("Checking for unmapped zone groups...")
+
+    unmapped_zone_groups = get_unmapped_zone_groups(ordered_zone_groups)
+
     if length(unmapped_zone_groups) > 0 do
       shell.error(
         "Found #{length(unmapped_zone_groups)} unmapped zone groups: " <>
-        "#{inspect unmapped_zone_groups}"
+          "#{inspect(unmapped_zone_groups)}"
       )
-      exit 1
+
+      exit(1)
     else
-      shell.info "All zone groups are mapped (that's good!)"
+      shell.info("All zone groups are mapped (that's good!)")
     end
 
-    shell.info "Mapping columns to zone codes..."
+    shell.info("Mapping columns to zone codes...")
 
-    column_zone_codes = Enum.map(
-      ordered_zone_groups,
-      &(@zone_groups_to_zone_codes[&1])
-    )
+    column_zone_codes =
+      Enum.map(
+        ordered_zone_groups,
+        &@zone_groups_to_zone_codes[&1]
+      )
 
-    shell.info "Generating zone land use conditions..."
+    shell.info("Generating zone land use conditions...")
 
-    land_use_condition_lines = Enum.slice(lines, 5..-1)
-    |> Stream.filter(&(not land_use_category?(&1)))
+    land_uses = get_land_uses(data)
 
-    zone_land_use_conditions = Enum.flat_map(
-      land_use_condition_lines,
-      &(get_zoning_district_land_use_conditions(&1, column_zone_codes))
-    )
+    land_uses =
+      Enum.map(
+        land_uses,
+        &LandUse.changeset(%LandUse{}, &1)
+      )
+      |> Enum.map(&Repo.insert!(&1, on_conflict: :replace_all, conflict_target: :name))
 
-    shell.info(
-      "Generated #{length(zone_land_use_conditions)} zone land use conditions"
-    )
+    land_uses_by_name =
+      Enum.reduce(
+        land_uses,
+        %{},
+        &Map.put(&2, &1.name, &1)
+      )
+
+    zoning_districts_by_code =
+      Enum.reduce(
+        Repo.all(ZoningDistrict),
+        %{},
+        &Map.put(&2, &1.code, &1)
+      )
+
+    zone_land_use_conditions =
+      Enum.filter(
+        data,
+        &is_nil(land_use_category(&1))
+      )
+      |> Enum.flat_map(
+        &get_zoning_district_land_use_conditions(
+          &1,
+          column_zone_codes,
+          land_uses_by_name,
+          zoning_districts_by_code
+        )
+      )
+
+    zone_land_use_conditions =
+      Enum.map(
+        zone_land_use_conditions,
+        &ZoningDistrictLandUseCondition.changeset(%ZoningDistrictLandUseCondition{}, &1)
+      )
+      |> Enum.map(
+        &Repo.insert!(
+          &1,
+          on_conflict: :replace_all,
+          conflict_target: [:zoning_district_id, :land_use_id]
+        )
+      )
+
+    shell.info("Generated #{length(zone_land_use_conditions)} zone land use conditions")
 
     zone_land_use_conditions
   end
@@ -167,14 +235,14 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
       ...> ])
       ["M H P", "O N"]
   """
-  def get_zone_groups(lines) do
-    zone_group_lines = Enum.slice lines, 2..4
+  def get_zone_groups(headers) do
+    zone_group_headers = Enum.slice(headers, 2..4)
 
-    Stream.zip(zone_group_lines)
-      |> Stream.drop(1)
-      |> Stream.map(&Tuple.to_list/1)
-      |> Stream.map(fn(zone_group_parts) -> Enum.join(zone_group_parts, " ") end)
-      |> Enum.map(&String.trim/1)
+    Stream.zip(zone_group_headers)
+    |> Stream.drop(1)
+    |> Stream.map(&Tuple.to_list/1)
+    |> Stream.map(fn zone_group_parts -> Enum.join(zone_group_parts, " ") end)
+    |> Enum.map(&String.trim/1)
   end
 
   @doc ~S"""
@@ -198,7 +266,7 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
   end
 
   @doc ~S"""
-  Returns True if the line represents a land use category
+  Returns the land use category if the line represents one, otherwise nil
 
   Land use category lines have one entry in the first column - every other
   entry is blank.
@@ -208,37 +276,86 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
 
   ## Example
 
-  This only returns true if the first element is populated and the remaining
-  lines are blank:
+  This only returns a category if the first element is populated and the
+  remaining lines are blank. It also strips out the trailing "Hello":
 
-      iex> Mix.Tasks.Parcel.IngestLandUseTable.land_use_category?(
-      ...>   ["hello", "", "", "", ""]
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.land_use_category(
+      ...>   ["Industrial Uses", "", "", "", ""]
       ...> )
-      true
+      "Industrial"
 
-  If the first line is empty, or there are some non-empty strings, this
-  returns false
+  If the first line is empty, there are some non-empty strings, or the
+  land use category doesn't end in " Uses", this returns nil
 
-      iex> Mix.Tasks.Parcel.IngestLandUseTable.land_use_category?(
-      ...>   ["", "hello", "", "", "", ""]
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.land_use_category(
+      ...>   ["", "Industrial Uses", "", "", "", ""]
       ...> )
-      false
+      nil
 
-      iex> Mix.Tasks.Parcel.IngestLandUseTable.land_use_category?(
-      ...>   ["hello", "", "", "", "", "world"]
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.land_use_category(
+      ...>   ["Residential Uses", "", "", "", "", "world"]
       ...> )
-      false
+      nil
   """
-  def land_use_category?(line) when length(line) > 0 do
-    [category | rest ] = line
-    (
-      category != "" and
-      Enum.all?(rest, &(&1 == ""))
-    )
+  def land_use_category(line) when length(line) > 0 do
+    [category | rest] = line
+
+    if category != "" and String.ends_with?(category, " Uses") and Enum.all?(rest, &(&1 == "")) do
+      String.replace(category, " Uses", "")
+    else
+      nil
+    end
   end
 
   @doc ~S"""
-  Return a list of `Parcel.Domain.ZoningDistrictLandUseCondition` for the line
+  Reduce a list of input lines into LandUse-like maps, with categories.
+
+  A `line` should come in the format
+
+    "Manufacturing, light", "A", "P", "", "PC", ...
+
+  or be a land use category line, as described in `land_use_category`.
+
+  ## Example
+
+      iex> IngestLandUseTable.get_land_uses([
+      ...>   ["Residential Uses", "", "", "", ""],
+      ...>   ["Garage Sale", "A", "P", "", "PC"],
+      ...>   ["Institutional Uses", "", "", "", ""],
+      ...>   ["Orphanage", "A", "P", "", ""],
+      ...>   ["Monastery or convent", "P", "P", "", ""],
+      ...> ])
+      [
+        %{category: "Residential", "name": "Garage Sale"},
+        %{category: "Institutional", "name": "Orphanage"},
+        %{category: "Institutional", "name": "Monastery or convent"},
+      ]
+  """
+  def get_land_uses(lines) do
+    {land_uses, _} =
+      Enum.reduce(lines, {[], nil}, fn line, {land_uses, category} ->
+        case land_use_category(line) do
+          nil ->
+            [name | _] = line
+
+            {
+              land_uses ++
+                [
+                  %{category: category, name: name}
+                ],
+              category
+            }
+
+          category ->
+            {land_uses, category}
+        end
+      end)
+
+    land_uses
+  end
+
+  @doc ~S"""
+  Return a list of `ZoningDistrictLandUseCondition`-like maps for the line
 
   A `line` should comes in the format
 
@@ -251,43 +368,54 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
 
   ## Example
 
-  The result is a flat list of `Parcel.Domain.ZoningDistrictLandUseCondition`.
+  The result is a flat list of `ZoningDistrictLandUseCondition`-like maps.
   Empty condition codes are translated to "NP" (Not permitted).
 
       iex> Mix.Tasks.Parcel.IngestLandUseTable.get_zoning_district_land_use_conditions(
       ...>   ["Microbrewery", "A", "P", "", "PC"],
-      ...>   [["North", "South"], ["West"], ["MUL", "MUL-A", "ON"], ["OL"]]
+      ...>   [["North", "South"], ["West"], [ "ON"], ["OL"]],
+      ...>   %{"Microbrewery" => %LandUse{id: 1, name: "Microbrewery", category: "Industrial"}},
+      ...>   %{
+      ...>    "North" => %ZoningDistrict{id: 1, code: "North"},
+      ...>    "South" => %ZoningDistrict{id: 2, code: "South"},
+      ...>    "West" => %ZoningDistrict{id: 3, code: "West"},
+      ...>    "ON" => %ZoningDistrict{id: 4, code: "ON"},
+      ...>    "OL" => %ZoningDistrict{id: 5, code: "OL"},
+      ...>   }
       ...> )
       [
-        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "North", land_use: "Microbrewery", land_use_condition: "A"},
-        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "South", land_use: "Microbrewery", land_use_condition: "A"},
-        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "West", land_use: "Microbrewery", land_use_condition: "P"},
-        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "MUL", land_use: "Microbrewery", land_use_condition: "NP"},
-        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "MUL-A", land_use: "Microbrewery", land_use_condition: "NP"},
-        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "ON", land_use: "Microbrewery", land_use_condition: "NP"},
-        %Parcel.Domain.ZoningDistrictLandUseCondition{zoning_district: "OL", land_use: "Microbrewery", land_use_condition: "PC"}
+        %{zoning_district_id: 1, land_use_id: 1, land_use_condition_id: LandUseCondition.a().id},
+        %{zoning_district_id: 2, land_use_id: 1, land_use_condition_id: LandUseCondition.a().id},
+        %{zoning_district_id: 3, land_use_id: 1, land_use_condition_id: LandUseCondition.p().id},
+        %{zoning_district_id: 4, land_use_id: 1, land_use_condition_id: LandUseCondition.np().id},
+        %{zoning_district_id: 5, land_use_id: 1, land_use_condition_id: LandUseCondition.pc().id}
       ]
   """
-  def get_zoning_district_land_use_conditions(line, columns_zone_codes) do
-    alias Parcel.Domain.ZoningDistrictLandUseCondition, as: ZoningCondition
+  def get_zoning_district_land_use_conditions(
+        line,
+        columns_zone_codes,
+        land_uses_by_name,
+        zoning_districts_by_code
+      ) do
+    alias Parcel.Zoning.LandUseCondition
 
-    [land_use | condition_codes ] = line
+    [land_use | condition_codes] = line
 
     Stream.zip(condition_codes, columns_zone_codes)
     |> Enum.flat_map(fn {condition_code, column_zone_codes} ->
-      condition_code = case condition_code do
-        "" -> "NP"
-        _ -> condition_code
-      end
-      # TODO: The field values should actually be objects but hacking it for now
-      Enum.map(
-        column_zone_codes, fn zone_code ->
-          %ZoningCondition{
-            land_use: land_use,
-            land_use_condition: condition_code,
-            zoning_district: zone_code,
-          }
-        end)
+      condition_code =
+        case condition_code do
+          "" -> "NP"
+          _ -> condition_code
+        end
+
+      Enum.map(column_zone_codes, fn zone_code ->
+        %{
+          land_use_id: land_uses_by_name[land_use].id,
+          land_use_condition_id: LandUseCondition.land_use_condition_for_code(condition_code).id,
+          zoning_district_id: zoning_districts_by_code[zone_code].id
+        }
+      end)
     end)
   end
 end

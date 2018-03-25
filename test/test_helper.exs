@@ -1,7 +1,8 @@
 ExUnit.start()
 
-# Exclude all tests that touch external systems from running by default
-ExUnit.configure exclude: [external: true]
+Ecto.Adapters.SQL.Sandbox.mode(Parcel.Repo, :manual)
 
-Mox.defmock(Parcel.NashvilleArcgisApi.MockClient,
-  for: Parcel.NashvilleArcgisApi.Client)
+# Exclude all tests that touch external systems from running by default
+ExUnit.configure(exclude: [external: true])
+
+Mox.defmock(Parcel.NashvilleArcgisApi.MockClient, for: Parcel.NashvilleArcgisApi.Client)

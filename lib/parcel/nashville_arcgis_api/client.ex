@@ -20,5 +20,4 @@ defmodule Parcel.NashvilleArcgisApi.Client do
   For example, "MUI", "AG".
   """
   @callback get_zone(point :: point) :: {:ok, String} | {:error, String}
-
 end

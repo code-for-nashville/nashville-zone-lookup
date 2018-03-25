@@ -11,9 +11,10 @@ defmodule Parcel.Zoning do
   def land_use_summary(address) do
     {:ok, point} = @nashville_arc_gis_api.geocode_address(address)
     {:ok, zone_code} = @nashville_arc_gis_api.get_zone(point)
+
     %{
       zone_code: zone_code,
-      land_uses: [],
+      land_uses: []
     }
   end
 end

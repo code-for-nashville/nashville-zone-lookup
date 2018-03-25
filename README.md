@@ -12,6 +12,7 @@ This backend serves both the frontend and the data consumed by the frontend.
 ## Running
 Prerequisites
 - Make sure Elixir and NodeJS are installed.
+- Make sure Docker is installed
 
 To build and run this app locally:
 - Install the Mix dependencies `mix deps.get`.
@@ -20,6 +21,10 @@ To build and run this app locally:
 - Navigate to frontend app `cd frontend`.
 - Install the NPM dependencies `npm install`.
 - Run the frontend's HTTP server `npm run dev`.
+- Run the database in the background with `docker run -p 5432:5432 --name parcel_db -d postgres`.
+- Create, seed, and migrate your database with `mix ecto.setup && mix ecto.migrate`
+- Optionally run the [Postgres shell](https://www.postgresql.org/docs/current/static/app-psql.html) with `docker exec -it parcel_db psql -U postgres parcel_dev`
+
 
 _Note: Additional commands are available for the frontend app and are documented in its [README](frontend)._
 
@@ -46,7 +51,7 @@ To test the frontend:
 ## Planning
 - For a detailed description of the project, check out the [Request for Volunteers](https://docs.google.com/document/d/17DNk0QQyi8SEK4utcMt3zT-Dc6vXzA_zcFwrEENvKJo/edit?usp=sharing).
 - For other shared documents, check out [Google Drive](https://drive.google.com/drive/folders/0Byi0NApRjhBXekRiVFA5MlZ2OTQ?usp=sharing).
-- For the latest design documents, check out [Invision](https://projects.invisionapp.com/share/8WCW9Z0QD#/screens/247107120_Starting_Page).
+- For the latest design documents, check out [Invision](https://projects.invisionapp.com/freehand/document/K7B47ZJqI).
 - For the planning board, check out [Github](https://github.com/code-for-nashville/parcel/projects/1).
 - [Latest list of zoning codes](https://library.municode.com/tn/metro_government_of_nashville_and_davidson_county/codes/code_of_ordinances?nodeId=CD_TIT17ZO_CH17.08ZODILAUS)
 
