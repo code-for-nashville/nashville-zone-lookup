@@ -25,9 +25,13 @@ defmodule ParcelWeb.ChannelCase do
     end
   end
 
+  setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Parcel.Repo)
 
-  setup _tags do
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(Parcel.Repo, {:shared, self()})
+    end
+
     :ok
   end
-
 end
