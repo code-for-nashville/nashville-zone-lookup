@@ -25,7 +25,6 @@ To build and run this app locally:
 - Create and migrate your database with `mix ecto.setup && mix ecto.migrate`
 - Optionally run the [Postgres shell](https://www.postgresql.org/docs/current/static/app-psql.html) with `docker exec -it parcel_db psql -U postgres parcel_dev`
 
-
 _Note: Additional commands are available for the frontend app and are documented in its [README](frontend)._
 
 To build and run this app for production:
@@ -49,8 +48,8 @@ To test the frontend:
 - Run the unit and end-to-end tests `npm run test`.
 
 ## Importing Data
-* Make sure you've followed the database setup instructions in [Running](#running). _Note: `mix ecto.setup` inserts seed data require for the data ingestion to run`_
-* Download the latest zoning spreadsheet [here](https://docs.google.com/spreadsheets/d/1O0Qc8nErSbstCiWpbpRQ0tPMS0NukCmcov2-s_u8Umg)
+* Make sure you've followed the database setup instructions in [Running](#running).
+* Download the latest zoning spreadsheet [here](https://docs.google.com/spreadsheets/d/1O0Qc8nErSbstCiWpbpRQ0tPMS0NukCmcov2-s_u8Umg) as a CSV
 * Run `mix help parcel.ingest_land_use_table` and follow instructions to execute that command.
 * If you need to re-import data, drop and re-create your database:
 `mix ecto.drop && mix ecto.setup && mix ecto.migrate`
