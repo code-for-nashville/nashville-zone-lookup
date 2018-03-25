@@ -48,6 +48,13 @@ To test the frontend:
 - Run the end-to-end tests `npm run e2e`.
 - Run the unit and end-to-end tests `npm run test`.
 
+## Importing Data
+* Make sure you've followed the database setup instructions in [Running](#running). _Note: `mix ecto.setup` inserts seed data require for the data ingestion to run`_
+* Download the latest zoning spreadsheet [here](https://docs.google.com/spreadsheets/d/1O0Qc8nErSbstCiWpbpRQ0tPMS0NukCmcov2-s_u8Umg)
+* Run `mix help parcel.ingest_land_use_table` and follow instructions to execute that command.
+* If you need to re-import data, drop and re-create your database:
+`mix ecto.drop && mix ecto.setup && mix ecto.migrate`
+
 ## Planning
 - For a detailed description of the project, check out the [Request for Volunteers](https://docs.google.com/document/d/17DNk0QQyi8SEK4utcMt3zT-Dc6vXzA_zcFwrEENvKJo/edit?usp=sharing).
 - For other shared documents, check out [Google Drive](https://drive.google.com/drive/folders/0Byi0NApRjhBXekRiVFA5MlZ2OTQ?usp=sharing).
