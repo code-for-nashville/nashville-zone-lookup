@@ -50,35 +50,37 @@ defmodule ParcelWeb.LandUsesControllerTest do
     conn =
       get(conn, api_land_uses_path(conn, :index, address: "500 Interstate Blvd S, Suite 300"))
 
-    assert json_response(conn, 200) == %{
-             "zone" => %{
-               "code" => "IR",
-               "description" =>
-                 "Industrial restrictive.  A wide range of light industrial uses at a small to moderate scale.",
-               "category" => "Industrial"
-             },
-             "land_uses" => [
-               %{
-                 "category" => LandUse.category_industrial(),
-                 "name" => "Clothing manufacturing",
-                 "condition" => %{
-                   "code" => LandUseCondition.p().code,
-                   "category" => LandUseCondition.p().category,
-                   "description" => LandUseCondition.p().description,
-                   "info_link" => LandUseCondition.p().info_link
-                 }
-               },
-               %{
-                 "category" => LandUse.category_residential(),
-                 "name" => "Residential",
-                 "condition" => %{
-                   "code" => LandUseCondition.np().code,
-                   "category" => LandUseCondition.np().category,
-                   "description" => LandUseCondition.np().description,
-                   "info_link" => LandUseCondition.np().info_link
-                 }
-               }
-             ]
-           }
+    expected = %{
+      "zone" => %{
+        "code" => "IR",
+        "description" =>
+          "Industrial restrictive.  A wide range of light industrial uses at a small to moderate scale.",
+        "category" => "Industrial"
+      },
+      "land_uses" => [
+        %{
+          "category" => LandUse.category_industrial(),
+          "name" => "Clothing manufacturing",
+          "condition" => %{
+            "code" => LandUseCondition.p().code,
+            "category" => LandUseCondition.p().category,
+            "description" => LandUseCondition.p().description,
+            "info_link" => LandUseCondition.p().info_link
+          }
+        },
+        %{
+          "category" => LandUse.category_residential(),
+          "name" => "Residential",
+          "condition" => %{
+            "code" => LandUseCondition.np().code,
+            "category" => LandUseCondition.np().category,
+            "description" => LandUseCondition.np().description,
+            "info_link" => LandUseCondition.np().info_link
+          }
+        }
+      ]
+    }
+
+    assert json_response(conn, 200) == expected
   end
 end
