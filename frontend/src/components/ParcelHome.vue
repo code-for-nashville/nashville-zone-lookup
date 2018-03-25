@@ -38,10 +38,7 @@
       </div>
     </div>
 
-    <search-results :results="[
-      { zoning_category: 'Industrial', zoning_description: 'do stuff in this zone' },
-      { zoning_category: 'Industrial', zoning_description: 'do stuff in this zone' },
-      ]"></search-results>
+    <search-results :results="searchResults"></search-results>
 
   </div>
 </template>
@@ -55,8 +52,14 @@
   export default {
     data () {
       return {
+        searchResults: [
+          { zoning_category: 'Industrial', zoning_description: 'do stuff in this zone' },
+          { zoning_category: 'Industrial', zoning_description: 'do stuff in this zone' },
+          { zoning_category: 'Industrial', zoning_description: 'do stuff in this zone' }
+        ]
       }
     },
+
     computed: {
       // ...mapState('intendedUses/usesForAddress'),
       ...mapGetters({
