@@ -3,7 +3,7 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
   Ingest the Nashville land use table as a CSV
 
   This translates a table of zoning code land use conditions provided by
-  Nashville into a list of `ZoningDistrictLandUseCondition`s.
+  Nashville into a list of `ZoneLandUseCondition`s.
   In the future this will write to a file or database, but for now it
   just returns the data as a list.
 
@@ -15,7 +15,7 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
 
   use Mix.Task
   alias Parcel.Repo
-  alias Parcel.Zoning.{LandUse, ZoningDistrict, ZoningDistrictLandUseCondition}
+  alias Parcel.Zoning.{LandUse, Zone, ZoneLandUseCondition}
 
   @shortdoc "Ingest the Nashville land use table as a CSV"
 
@@ -151,9 +151,9 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
         &Map.put(&2, &1.name, &1)
       )
 
-    zoning_districts_by_code =
+    zones_by_code =
       Enum.reduce(
-        Repo.all(ZoningDistrict),
+        Repo.all(Zone),
         %{},
         &Map.put(&2, &1.code, &1)
       )
@@ -164,24 +164,24 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
         &is_nil(land_use_category(&1))
       )
       |> Enum.flat_map(
-        &get_zoning_district_land_use_conditions(
+        &get_zone_land_use_conditions(
           &1,
           column_zone_codes,
           land_uses_by_name,
-          zoning_districts_by_code
+          zones_by_code
         )
       )
 
     zone_land_use_conditions =
       Enum.map(
         zone_land_use_conditions,
-        &ZoningDistrictLandUseCondition.changeset(%ZoningDistrictLandUseCondition{}, &1)
+        &ZoneLandUseCondition.changeset(%ZoneLandUseCondition{}, &1)
       )
       |> Enum.map(
         &Repo.insert!(
           &1,
           on_conflict: :replace_all,
-          conflict_target: [:zoning_district_id, :land_use_id]
+          conflict_target: [:zone_id, :land_use_id]
         )
       )
 
@@ -355,47 +355,47 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
   end
 
   @doc ~S"""
-  Return a list of `ZoningDistrictLandUseCondition`-like maps for the line
+  Return a list of `ZoneLandUseCondition`-like maps for the line
 
   A `line` should comes in the format
 
     "Manufacturing, light", "A", "P", "", "PC", ...
 
-  and the `column_zone_codes` include a list of Zoning District codes covered
+  and the `column_zone_codes` include a list of Zone codes covered
   for each column:
 
     [["AG, "AR2a"], ["SP"], ...]
 
   ## Example
 
-  The result is a flat list of `ZoningDistrictLandUseCondition`-like maps.
+  The result is a flat list of `ZoneLandUseCondition`-like maps.
   Empty condition codes are translated to "NP" (Not permitted).
 
-      iex> Mix.Tasks.Parcel.IngestLandUseTable.get_zoning_district_land_use_conditions(
+      iex> Mix.Tasks.Parcel.IngestLandUseTable.get_zone_land_use_conditions(
       ...>   ["Microbrewery", "A", "P", "", "PC"],
       ...>   [["North", "South"], ["West"], [ "ON"], ["OL"]],
       ...>   %{"Microbrewery" => %LandUse{id: 1, name: "Microbrewery", category: "Industrial"}},
       ...>   %{
-      ...>    "North" => %ZoningDistrict{id: 1, code: "North"},
-      ...>    "South" => %ZoningDistrict{id: 2, code: "South"},
-      ...>    "West" => %ZoningDistrict{id: 3, code: "West"},
-      ...>    "ON" => %ZoningDistrict{id: 4, code: "ON"},
-      ...>    "OL" => %ZoningDistrict{id: 5, code: "OL"},
+      ...>    "North" => %Zone{id: 1, code: "North"},
+      ...>    "South" => %Zone{id: 2, code: "South"},
+      ...>    "West" => %Zone{id: 3, code: "West"},
+      ...>    "ON" => %Zone{id: 4, code: "ON"},
+      ...>    "OL" => %Zone{id: 5, code: "OL"},
       ...>   }
       ...> )
       [
-        %{zoning_district_id: 1, land_use_id: 1, land_use_condition_id: LandUseCondition.a().id},
-        %{zoning_district_id: 2, land_use_id: 1, land_use_condition_id: LandUseCondition.a().id},
-        %{zoning_district_id: 3, land_use_id: 1, land_use_condition_id: LandUseCondition.p().id},
-        %{zoning_district_id: 4, land_use_id: 1, land_use_condition_id: LandUseCondition.np().id},
-        %{zoning_district_id: 5, land_use_id: 1, land_use_condition_id: LandUseCondition.pc().id}
+        %{zone_id: 1, land_use_id: 1, land_use_condition_id: LandUseCondition.a().id},
+        %{zone_id: 2, land_use_id: 1, land_use_condition_id: LandUseCondition.a().id},
+        %{zone_id: 3, land_use_id: 1, land_use_condition_id: LandUseCondition.p().id},
+        %{zone_id: 4, land_use_id: 1, land_use_condition_id: LandUseCondition.np().id},
+        %{zone_id: 5, land_use_id: 1, land_use_condition_id: LandUseCondition.pc().id}
       ]
   """
-  def get_zoning_district_land_use_conditions(
+  def get_zone_land_use_conditions(
         line,
         columns_zone_codes,
         land_uses_by_name,
-        zoning_districts_by_code
+        zones_by_code
       ) do
     alias Parcel.Zoning.LandUseCondition
 
@@ -413,7 +413,7 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
         %{
           land_use_id: land_uses_by_name[land_use].id,
           land_use_condition_id: LandUseCondition.land_use_condition_for_code(condition_code).id,
-          zoning_district_id: zoning_districts_by_code[zone_code].id
+          zone_id: zones_by_code[zone_code].id
         }
       end)
     end)

@@ -1,8 +1,8 @@
-defmodule Parcel.Repo.Migrations.CreateZoningDistricts do
+defmodule Parcel.Repo.Migrations.CreateZones do
   use Ecto.Migration
 
   def change do
-    create table(:zoning_districts) do
+    create table(:zones) do
       add :category, :string
       add :code, :string
       add :description, :string
@@ -10,6 +10,6 @@ defmodule Parcel.Repo.Migrations.CreateZoningDistricts do
       timestamps()
     end
 
-    create unique_index(:zoning_districts, [:code])
+    create unique_index(:zones, [:code])
   end
 end

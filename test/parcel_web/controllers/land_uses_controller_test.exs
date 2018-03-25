@@ -1,7 +1,7 @@
 defmodule ParcelWeb.LandUsesControllerTest do
   alias Parcel.NashvilleArcgisApi.MockClient
   alias Parcel.Repo
-  alias Parcel.Zoning.{LandUse, LandUseCondition, ZoningDistrict, ZoningDistrictLandUseCondition}
+  alias Parcel.Zoning.{LandUse, LandUseCondition, Zone, ZoneLandUseCondition}
 
   import Mox
   import ParcelWeb.Router.Helpers
@@ -20,26 +20,26 @@ defmodule ParcelWeb.LandUsesControllerTest do
     |> expect(:get_zone, fn(_) -> {:ok, "IR"} end)
 
     # We need a
-    # * ZoningDistrict
+    # * Zone
     # * two LandUses, one good, one bad
     # * our pre-existing LandUseCondition. Note that these are inserted
-    # by ZoningDistrictLandUseCondition, so will error if they're the same.
-    zone = Repo.insert! %ZoningDistrict{
+    # by ZoneLandUseCondition, so will error if they're the same.
+    zone = Repo.insert! %Zone{
         code: "IR",
-        category: ZoningDistrict.category_industrial,
+        category: Zone.category_industrial,
         description: "Industrial restrictive.  A wide range of light industrial uses at a small to moderate scale."
     }
     land_use_1 = %LandUse{category: LandUse.category_industrial, name: "Clothing manufacturing"}
     land_use_2 = %LandUse{category: LandUse.category_residential, name: "Residential"}
 
-    Repo.insert! %ZoningDistrictLandUseCondition{
+    Repo.insert! %ZoneLandUseCondition{
       land_use: land_use_1,
-      zoning_district_id: zone.id,
+      zone_id: zone.id,
       land_use_condition: LandUseCondition.p,
     }
-    Repo.insert! %ZoningDistrictLandUseCondition{
+    Repo.insert! %ZoneLandUseCondition{
       land_use: land_use_2,
-      zoning_district_id: zone.id,
+      zone_id: zone.id,
       land_use_condition: LandUseCondition.np,
     }
 

@@ -1,22 +1,22 @@
-defmodule Parcel.Zoning.ZoningDistrict do
+defmodule Parcel.Zoning.Zone do
   @moduledoc ~S"""
-  A `Parcel.Domain.ZoningDistrict` defines and limits acceptable land use for
+  A `Parcel.Domain.Zone` defines and limits acceptable land use for
   property within the district.
 
-  Each Zoning District is assigned an alphanumeric
-  `:code` that is unique. A Zoning District is often referred to as simply a "zone".
+  Each Zone is assigned an alphanumeric
+  `:code` that is unique. A Zone is often referred to as simply a "zone".
 
-  While Zoning Districts are somewhat arbitrary, they usually fit into
+  While Zones are somewhat arbitrary, they usually fit into
   a pre-defined `:category`.
 
-  A Zoning District may include a short textual `:description`.  This usually
+  A Zone may include a short textual `:description`.  This usually
   describes the type of property included in this zone and should be a
   complete sentence, as it will likely appear in the user interface.
   """
 
   use Ecto.Schema
   import Ecto.Changeset
-  alias Parcel.Zoning.ZoningDistrict
+  alias Parcel.Zoning.Zone
 
   # Private Constants
 
@@ -44,7 +44,7 @@ defmodule Parcel.Zoning.ZoningDistrict do
     @category_industrial
   ]
 
-  schema "zoning_districts" do
+  schema "zones" do
     field(:category, :string)
     field(:code, :string)
     field(:description, :string)
@@ -53,8 +53,8 @@ defmodule Parcel.Zoning.ZoningDistrict do
   end
 
   @doc false
-  def changeset(%ZoningDistrict{} = zoning_district, attrs) do
-    zoning_district
+  def changeset(%Zone{} = zone, attrs) do
+    zone
     |> cast(attrs, [:category, :code, :description])
     |> validate_required([:category, :code, :description])
     |> validate_inclusion(:category, @categories)

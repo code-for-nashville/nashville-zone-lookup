@@ -4,7 +4,7 @@ defmodule Parcel.Zoning.LandUseCondition do
 
   Many `Parcel.Domain.LandUse` are unconditionally permitted ("Permitted by
   right" in Nashville's terminology) for a particular
-  `Parcel.Domain.ZoningDistrict`.  However, other `Parcel.Domain.LandUse`
+  `Parcel.Domain.Zone`.  However, other `Parcel.Domain.LandUse`
   are only permitted under specific conditions. For example, the Land Use
   may require approval from a zoning board, or can only be permitted withing
   an overlay district.
