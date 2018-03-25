@@ -10,18 +10,23 @@ defmodule Parcel.NashvilleArcgisApi.HttpClient do
     # For a full list of available query parameters, see:
     # https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm
     query_params = [
-      {"SingleLine", address},         # Address to search for candidates for
-      {"maxLocations", 1}              # We only care about the first candidate
+      # Address to search for candidates for
+      {"SingleLine", address},
+      # We only care about the first candidate
+      {"maxLocations", 1}
     ]
+
     case NashvilleArcgisApi.get(endpoint, [], params: query_params) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        address_match = List.first body["candidates"]
+        address_match = List.first(body["candidates"])
+
         if not is_nil(address_match) do
           point_map = address_match["location"]
           {:ok, {point_map["x"], point_map["y"]}}
         else
           {:error, "No candidates returned"}
         end
+
       {:error, %HTTPoison.Error{reason: reason}} ->
         {:error, "Server error #{reason}"}
     end
@@ -41,13 +46,14 @@ defmodule Parcel.NashvilleArcgisApi.HttpClient do
       # Skip returning the Zone polygon - we're just using the ZONE_DESC right now
       {"returnGeometry", false},
       # Minimal output
-      {"outFields", "ZONE_DESC"},
+      {"outFields", "ZONE_DESC"}
     ]
 
     case NashvilleArcgisApi.get(endpoint, [], params: query_params) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        result = List.first body["features"]
+        result = List.first(body["features"])
         {:ok, result["attributes"]["ZONE_DESC"]}
+
       {:error, %HTTPoison.Error{reason: reason}} ->
         {:error, "Server error #{reason}"}
     end

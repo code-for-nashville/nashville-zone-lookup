@@ -18,7 +18,7 @@ defmodule Parcel.NashvilleArcgisApi do
   @default_params [
     {"f", "json"},
     {"outSR", @web_mercator_wkid},
-    {"inSR", @web_mercator_wkid},
+    {"inSR", @web_mercator_wkid}
   ]
 
   @doc false
@@ -27,7 +27,7 @@ defmodule Parcel.NashvilleArcgisApi do
   @doc false
   def process_request_headers(headers), do: @default_headers ++ headers
 
-  @doc"""
+  @doc """
   Request JSON and sets the spatial reference to Web Mercator for consistency
   """
   def process_request_options(options) do

@@ -9,13 +9,13 @@ defmodule Mix.Tasks.Parcel.PrepareStaticAssets do
   @asset_types_with_source_maps ["css", "js"]
 
   def run(_args) do
-    Mix.shell.info("Building static assets in '#{@assets_source}'.")
+    Mix.shell().info("Building static assets in '#{@assets_source}'.")
     build_assets()
-    Mix.shell.info("Static assets built successfully.")
+    Mix.shell().info("Static assets built successfully.")
 
-    Mix.shell.info("Copying static assets from '#{@assets_source}' to '#{@assets_target}'")
+    Mix.shell().info("Copying static assets from '#{@assets_source}' to '#{@assets_target}'")
     copy_assets()
-    Mix.shell.info("Static assets copied successfully.")
+    Mix.shell().info("Static assets copied successfully.")
   end
 
   defp build_assets do
@@ -25,11 +25,11 @@ defmodule Mix.Tasks.Parcel.PrepareStaticAssets do
 
   defp copy_assets do
     @asset_types
-    |> Enum.each(fn(asset_type) -> do_copy_assets(asset_type) end)
+    |> Enum.each(fn asset_type -> do_copy_assets(asset_type) end)
   end
 
   defp do_copy_assets(asset_type) when asset_type in @asset_types_with_source_maps do
-    Mix.shell.info("Copying '#{asset_type}' static assets.")
+    Mix.shell().info("Copying '#{asset_type}' static assets.")
     source_files = Path.wildcard("./#{@assets_source}/dist/static/#{asset_type}/*.#{asset_type}")
     map_files = Path.wildcard("./#{@assets_source}/dist/static/#{asset_type}/*.map")
     target_dir = "./#{@assets_target}/#{asset_type}"

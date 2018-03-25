@@ -11,3 +11,12 @@ config :parcel, :nashville_arc_gis_api, Parcel.NashvilleArcgisApi.MockClient
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+# Configure your database
+config :parcel, Parcel.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "postgres",
+  password: "postgres",
+  database: "parcel_test",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox

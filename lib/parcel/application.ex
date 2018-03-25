@@ -10,6 +10,8 @@ defmodule Parcel.Application do
     children = [
       # Start the endpoint when the application starts
       supervisor(ParcelWeb.Endpoint, []),
+      # Start the Ecto repository
+      supervisor(Parcel.Repo, [])
       # Start your own worker by calling: Parcel.Worker.start_link(arg1, arg2, arg3)
       # worker(Parcel.Worker, [arg1, arg2, arg3]),
     ]
