@@ -38,7 +38,10 @@
       </div>
     </div>
 
-    <search-results :results="[]"></search-results>
+    <search-results :results="[
+      { zoning_category: 'Industrial', zoning_description: 'do stuff in this zone' },
+      { zoning_category: 'Industrial', zoning_description: 'do stuff in this zone' },
+      ]"></search-results>
 
   </div>
 </template>
@@ -77,10 +80,12 @@
         this.fetchUsesForAddress(address)
       }, 450)
     },
+
     components: {
       SearchResults,
       UseDropdown
     },
+
     created () {
       this.fetchAllIntendedUses()
     }

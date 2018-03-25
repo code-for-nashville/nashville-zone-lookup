@@ -1,16 +1,18 @@
 <template>
     <div id="searchResultsContainer" class="no-gutters row justify-content-center">
       <div id="searchResultsHeader" class="col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4">
-        <div class="col-10 clearfix">
-          <div class="categoryColor"></div>
-          <div class="zoningCategory">Industrial, IDW</div>
-        </div>
+          <template v-for="result in results">
+            <div class="col-10 clearfix">
+              <div class="categoryColor"></div>
+              <div class="zoningCategory">{{ result.zoning_category }}</div>
+            </div>
 
-        <div class="col-10">
-          <p class="zoningDescription">
-            Industrial Warehousing/Distribution, intended for a wide range of warehousing, wholesaling, and bulk distribution uses.
-          </p>
-        </div>
+            <div class="col-10">
+              <p class="zoningDescription">
+                {{ result.zoning_description }}
+              </p>
+            </div>
+        </template>
       </div>
     </div>
 </template>
