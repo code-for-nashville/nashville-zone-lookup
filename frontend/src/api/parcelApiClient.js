@@ -10,7 +10,7 @@ class ParcelApiClient {
   }
 
   getAllIntendedUses () {
-    return this.client.get('/intended-uses')
+    return this.client.get('/landusecategories')
   }
 
 /* /landuses/?address="My Addresss" - Return an object:
