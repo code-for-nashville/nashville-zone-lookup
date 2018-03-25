@@ -24,7 +24,6 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTableTest do
 
   describe "run/1" do
     test "end to end test that a flattened list of zoning conditions are returned for a sample file" do
-      seed_data()
       actual = IngestLandUseTable.run([@land_use_table_csv])
 
       expected = [
@@ -68,97 +67,5 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTableTest do
 
       assert expected == simple_actual
     end
-  end
-
-  def seed_data do
-    # Copied anything from seeds.exs needed to run sample.xls.csv
-    # Land Use Conditions
-    Repo.insert!(LandUseCondition.p())
-    Repo.insert!(LandUseCondition.np())
-    Repo.insert!(LandUseCondition.pc())
-    Repo.insert!(LandUseCondition.a())
-
-    # Zones
-    Repo.insert!(%Zone{
-      code: "AG",
-      category: Zone.category_agricultural(),
-      description:
-        "Very low density residential development generally on unsubdivided tracts of land where public sanitary sewer service and public water supply are least practical."
-    })
-
-    Repo.insert!(%Zone{
-      code: "AR2a",
-      category: Zone.category_agricultural(),
-      description:
-        "Very low density residential development generally on unsubdivided tracts of land where public sanitary sewer service and public water supply are least practical."
-    })
-
-    Repo.insert!(%Zone{
-      code: "RM40",
-      category: Zone.category_residential(),
-      description:
-        "High intensity multifamily development, typically characterized by mid- and high-rise structures and structured parking.  40 units an acre."
-    })
-
-    Repo.insert!(%Zone{
-      code: "RM40-A",
-      category: Zone.category_residential(),
-      description:
-        "High intensity multifamily development, typically characterized by mid- and high-rise structures and structured parking.  40 units an acre."
-    })
-
-    Repo.insert!(%Zone{
-      code: "RM60",
-      category: Zone.category_residential(),
-      description:
-        "High intensity multifamily development, typically characterized by mid- and high-rise structures and structured parking.  60 units an acre."
-    })
-
-    Repo.insert!(%Zone{
-      code: "RM60-A",
-      category: Zone.category_residential(),
-      description:
-        "High intensity multifamily development, typically characterized by mid- and high-rise structures and structured parking.  60 units an acre."
-    })
-
-    Repo.insert!(%Zone{
-      code: "RM80-A",
-      category: Zone.category_residential(),
-      description:
-        "High intensity residential structures, typically characterized by mid- and high-rise structures and structured parking.  80 units an acre."
-    })
-
-    Repo.insert!(%Zone{
-      code: "RM100-A",
-      category: Zone.category_residential(),
-      description:
-        "High intensity residential structures, typically characterized by mid- and high-rise structures and structured parking.  100 units an acre."
-    })
-
-    Repo.insert!(%Zone{
-      code: "MHP",
-      category: Zone.category_residential(),
-      description: "Mobile home parks."
-    })
-
-    Repo.insert!(%Zone{
-      code: "SP",
-      category: Zone.category_specific_plan(),
-      description: "Specific plan.  Context sensitive development and land use compatibility."
-    })
-
-    Repo.insert!(%Zone{
-      code: "MUN",
-      category: Zone.category_mixed_use(),
-      description:
-        "Mixed-use neighborhood.  Lower intensity mixture of residential, office, personal service and retail shopping."
-    })
-
-    Repo.insert!(%Zone{
-      code: "MUN-A",
-      category: Zone.category_mixed_use(),
-      description:
-        "Mixed-use neighborhood alternative.  Lower intensity mixture mixture of residential, office, personal service and retail shopping."
-    })
   end
 end
