@@ -6,6 +6,9 @@ elixir:
 otp_release:
   - 20.2
 
+addons:
+  postgresql: "9.6"
+
 cache:
   directories:
     - _build
@@ -37,6 +40,3 @@ branches:
   only:
     - master
     - develop
-
-# addons:
-#   chrome: stable

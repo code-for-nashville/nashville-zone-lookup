@@ -21,7 +21,7 @@ To build and run this app locally:
 - Navigate to frontend app `cd frontend`.
 - Install the NPM dependencies `npm install`.
 - Run the frontend's HTTP server `npm run dev`.
-- Run the database in the background with `docker run -p 5432:5432 --name parcel_db -d postgres`.
+- Run the database in the background with `docker run -p 5432:5432 --name parcel_db -d postgres:9.6`.
 - Create, seed, and migrate your database with `mix ecto.setup && mix ecto.migrate`
 - Optionally run the [Postgres shell](https://www.postgresql.org/docs/current/static/app-psql.html) with `docker exec -it parcel_db psql -U postgres parcel_dev`
 
