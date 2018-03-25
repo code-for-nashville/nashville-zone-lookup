@@ -14,7 +14,7 @@ defmodule ParcelWeb.LandUsesControllerTest do
 
   setup :verify_on_exit!
 
-  test "Returns canned results", %{conn: conn} do
+  test "Correctly queries the database and structures data", %{conn: conn} do
     MockClient
     |> expect(:geocode_address, fn(_) -> {:ok, {0, 0}} end)
     |> expect(:get_zone, fn(_) -> {:ok, "IR"} end)
@@ -58,6 +58,7 @@ defmodule ParcelWeb.LandUsesControllerTest do
           "name" => "Clothing manufacturing",
           "condition" => %{
             "code" => LandUseCondition.p().code,
+            "category" => LandUseCondition.p().category,
             "description" => LandUseCondition.p().description,
             "info_link" => LandUseCondition.p().info_link,
           }
@@ -67,6 +68,7 @@ defmodule ParcelWeb.LandUsesControllerTest do
           "name" => "Residential",
           "condition" => %{
             "code" => LandUseCondition.np().code,
+            "category" => LandUseCondition.np().category,
             "description" => LandUseCondition.np().description,
             "info_link" => LandUseCondition.np().info_link,
           }

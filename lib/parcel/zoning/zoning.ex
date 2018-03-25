@@ -36,6 +36,7 @@ defmodule Parcel.Zoning do
           "name" => zone_land_use.land_use.name,
           "condition" => %{
             "code" => zone_land_use.land_use_condition.code,
+            "category" => zone_land_use.land_use_condition.category,
             "description" => zone_land_use.land_use_condition.description,
             "info_link" => zone_land_use.land_use_condition.info_link,
           }
