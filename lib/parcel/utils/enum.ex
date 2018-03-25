@@ -1,5 +1,4 @@
 defmodule Parcel.Utils.Enum do
-
   @doc """
   Like `Enum.group_by`, but the value is a single element instead of a list.
 
