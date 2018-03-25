@@ -50,7 +50,12 @@
   import UseDropdown from './UseDropdown.vue'
 
   export default {
+    data () {
+      return {
+      }
+    },
     computed: {
+      // ...mapState('intendedUses/usesForAddress'),
       ...mapGetters({
         intendedUses: 'intendedUses/intendedUses'
       })
@@ -63,10 +68,13 @@
 
       onUseSelected (use) {
         console.info(use)
+        // TODO filter search results down to use category of interest
       },
 
-      onAddressChanged: debounce(address => {
+      onAddressChanged: debounce(function (address) {
         console.info(address)
+
+        this.fetchUsesForAddress(address)
       }, 450)
     },
     components: {

@@ -21,6 +21,7 @@ export const actions = {
       .getUsesForAddress(address)
       .then(resp => {
         // TODO return uses extracted from repsonse
+        console.info(resp)
         return []
       })
       .then(usesForAddress => commit(types.GET_USES_FOR_ADDRESS_SUCCESS, usesForAddress))
