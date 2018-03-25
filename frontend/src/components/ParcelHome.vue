@@ -38,34 +38,30 @@
       </div>
     </div>
 
-    <search-results :results="searchResults"></search-results>
+    <search-results :results="results"></search-results>
 
   </div>
 </template>
 
 <script>
   import { debounce } from 'lodash'
-  import { mapGetters, mapActions } from 'vuex'
+  import { mapGetters, mapActions, mapState } from 'vuex'
   import SearchResults from './SearchResults.vue'
   import UseDropdown from './UseDropdown.vue'
 
   export default {
     data () {
-      return {
-        searchResults: [
-          { zoning_category: 'Industrial', zoning_description: 'do stuff in this zone' },
-          { zoning_category: 'Industrial', zoning_description: 'do stuff in this zone' },
-          { zoning_category: 'Industrial', zoning_description: 'do stuff in this zone' }
-        ]
-      }
+      return {}
     },
 
     computed: {
-      // ...mapState('intendedUses/usesForAddress'),
+      ...mapState('intendedUses', { results: state => state.usesForAddress }),
+
       ...mapGetters({
         intendedUses: 'intendedUses/intendedUses'
       })
     },
+
     methods: {
       ...mapActions({
         fetchAllIntendedUses: 'intendedUses/fetchAllIntendedUses',

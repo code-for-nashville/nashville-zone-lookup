@@ -1,4 +1,4 @@
-import ParcelApiClient from '@/api/parcelApiClient'
+// import ParcelApiClient from '@/api/parcelApiClient'
 import * as types from '../mutationTypes'
 
 const state = {
@@ -25,13 +25,17 @@ export const actions = {
   },
 
   fetchUsesForAddress ({ commit }, address) {
-    return ParcelApiClient
-      .getUsesForAddress(address)
-      .then(resp => {
-        // TODO return uses extracted from repsonse
-        console.info(resp)
-        return []
-      })
+    // return ParcelApiClient
+      // .getUsesForAddress(address)
+      // .then(resp => {
+        // // TODO return uses extracted from repsonse
+        // console.info(resp)
+        // return []
+      // })
+    return Promise.resolve([
+        { zoning_category: 'Industrial', zoning_description: 'do stuff in this zone' },
+        { zoning_category: 'Industrial', zoning_description: 'do stuff in this zone' }
+    ])
       .then(usesForAddress => commit(types.GET_USES_FOR_ADDRESS_SUCCESS, usesForAddress))
       .catch(err => console.error(err))
   }
