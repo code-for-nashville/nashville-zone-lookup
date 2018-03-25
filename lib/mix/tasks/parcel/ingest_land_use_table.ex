@@ -15,6 +15,7 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
 
   use Mix.Task
   alias Parcel.Repo
+  alias Parcel.Utils.Enum, as: EnumUtils
   alias Parcel.Zoning.{LandUse, Zone, ZoneLandUseCondition}
 
   @shortdoc "Ingest the Nashville land use table as a CSV"
@@ -73,6 +74,26 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
     "I R" => ["IR"],
     "I G" => ["IG"]
   }
+
+  @doc """
+  Ensure that any `Zone`s and `LandUseCondition`s required by the script are
+  available.
+
+  """
+  def ensure_zones_and_land_use_conditions() do
+  end
+
+  @doc """
+  Returns a mapping of each `Zone` :code its :id
+  """
+  def get_zone_lookup() do
+  end
+
+  @doc """
+  Returns a mapping of each `LandUse` :name its :id
+  """
+  def get_land_use_lookup() do
+  end
 
   def run(args) do
     {opts, [filepath]} =
@@ -144,19 +165,9 @@ defmodule Mix.Tasks.Parcel.IngestLandUseTable do
       )
       |> Enum.map(&Repo.insert!(&1, on_conflict: :replace_all, conflict_target: :name))
 
-    land_uses_by_name =
-      Enum.reduce(
-        land_uses,
-        %{},
-        &Map.put(&2, &1.name, &1)
-      )
+    land_uses_by_name = EnumUtils.index_by(land_uses, &(&1.name))
 
-    zones_by_code =
-      Enum.reduce(
-        Repo.all(Zone),
-        %{},
-        &Map.put(&2, &1.code, &1)
-      )
+    zones_by_code = EnumUtils.index_by(Repo.all(Zone), &(&1.code))
 
     zone_land_use_conditions =
       Enum.filter(
