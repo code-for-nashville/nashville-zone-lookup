@@ -5,7 +5,7 @@
                 <div class="row justify-content-between">
                     <h1 class="col-12 col-md-3 py-3 mb-0">Parcel</h1>
                     <div class="col-12 mb-3 col-md-auto mb-md-0">
-                        I'm looking for:
+                        <span class="mr-3">I'm looking for:</span>
                         <use-category-dropdown
                             class="pb-0"
                             @selected="onCategorySelected"
