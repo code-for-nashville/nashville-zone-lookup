@@ -4,7 +4,7 @@
         :href="condition.info_link"
         class="ConditionCategory__info_link"
         target="_blank"
-        title="Learn more about this condition"
+        title="Learn more about the conditions for this use"
       >
         <i :class="classString + ' ConditionCategory__icon'"></i>
       </a>
