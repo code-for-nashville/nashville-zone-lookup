@@ -27,9 +27,7 @@ npm test
 ```
 
 ## Project Outline
-For detailed explanation on how the project is structured, checkout the [vue.js project template guide](http://vuejs-templates.github.io/webpack/) and the [docs for vue-loader](http://vuejs.github.io/vue-loader).
-
-This project also uses [`vue-router`](https://router.vuejs.org/en/) for minimal routing, and [`vuex`](https://vuex.vuejs.org/en/) for state management.
+For detailed explanation on how the project is structured, checkout the [vue.js project template guide](http://vuejs-templates.github.io/webpack/) and the [docs for vue-loader](http://vuejs.github.io/vue-loader).  This project also uses [`vue-router`](https://router.vuejs.org/en/) for minimal routing.
 
 ## Styles
 [Bootstrap 4](http://getbootstrap.com/) and [its plugins](https://getbootstrap.com/docs/4.0/getting-started/javascript) are loaded globally in `index.html`.
