@@ -13,14 +13,21 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 .UseCategoryDropdown {
-    height: 4rem;
-    padding: .25rem 1.5rem;
-    text-align: left;
     border: none;
     background-color: rgba(255, 255, 255, 0.19);
+    color: $light-text-color;
+    font-weight: 500;
+    height: 4rem;
+    min-width: 18rex;
+    padding: .25rem 1.5rem;
+    text-align: left;
+
+    option {
+        color: $secondary-text-color;
+    }
 }
 
 @media (min-width: 1199px) {
