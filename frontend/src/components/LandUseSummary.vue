@@ -1,62 +1,96 @@
 <template>
     <div class="LandUseSummary">
-        <div class="LandUseSummaryHeader row">
+        <div class="row LandUseSummaryHeader">
             <div class="col-12">
-                <span class="categoryColor"></span>
-                <span class="zoningIdentifier">
+                <span class="CategoryColor"></span>
+                <span class="ZoningIdentifier">
                     {{ summary.zone.category }}, {{ summary.zone.code }}
                 </span>
             </div>
 
             <div class="col-12">
-                <p class="zoningDescription">
+                <p class="ZoningDescription">
                     {{ summary.zone.description }}
                 </p>
             </div>
         </div>
-        <template v-for="land_use in land_uses">
-            <div class="LandUse card mb-2">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        {{ land_use.name }}
-                    </h5>
-                    <p class="card-text">
-                        {{ land_use.condition.description }}
-                    </p>
-                </div>
+        <land-use-section
+            :category="selectedCategory"
+            :landUses="landUsesByCategory[selectedCategory]"
+            :showHeader="false"
+            class="SelectedLandUseCategory"
+            v-if="selectedCategory"
+        >
+        </land-use-section>
+        <land-use-section
+            :category="category"
+            :key="category"
+            :landUses="landUses"
+            :showHeader="true"
+            class="OtherLandUseCategories"
+            v-for="(landUses, category) in landUsesByCategory"
+            v-if="!selectedCategory || (displayOtherUses && category != selectedCategory)"
+        >
+        </land-use-section>
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <button
+                    class="btn btn-link"
+                    @click="enableDisplayOtherUses()"
+                    v-if="showOtherUsesExpander"
+                >
+                    View Other Uses <i class="fa fa-caret-down"></i>
+                </button>
             </div>
-        </template>
+        </div>
     </div>
 </template>
 
 <script>
+import { groupBy } from 'lodash'
+import LandUseSection from './LandUseSection.vue'
+
 export default {
+  components: {
+    LandUseSection
+  },
   computed: {
-    land_uses: function () {
-      if (!this.category) {
-        return this.summary.land_uses
-      }
-      return this.summary.land_uses.filter(l => l.category === this.category)
+    landUsesByCategory () {
+      return groupBy(this.summary.land_uses, l => l.category)
+    },
+    // Whether we should display the "View Other Uses" button
+    showOtherUsesExpander () {
+      return (
+        // There is a selected category
+        this.selectedCategory &&
+        // We're not already showing them
+        !this.displayOtherUses
+      )
+    }
+  },
+  data () {
+    return {
+      displayOtherUses: false
+    }
+  },
+  methods: {
+    enableDisplayOtherUses () {
+      this.displayOtherUses = true
     }
   },
   props: [
-    'category',
+    'selectedCategory',
     'summary'
   ]
 }
 </script>
 
 <style scoped>
-#LandUseSummaryHeader {
+.LandUseSummaryHeader {
     padding-bottom: 1rem;
-    padding-top: 1rem;
 }
 
-.LandUse h5.card-title{
-    font-family: 'Source Sans Pro', serif
-}
-
-.categoryColor {
+.CategoryColor {
     background-color: blue;
     border-radius: 50%;
     display: inline-block;
@@ -67,7 +101,7 @@ export default {
     width: 18px;
 }
 
-.zoningIdentifier {
+.ZoningIdentifier {
     display: inline-block;
     float: left;
     font-size: 20px;
@@ -75,7 +109,7 @@ export default {
     margin-top: 0.5rem;
 }
 
-.zoningDescription {
+.ZoningDescription {
     text-align: left;
 }
 </style>

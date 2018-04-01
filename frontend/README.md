@@ -32,4 +32,4 @@ For detailed explanation on how the project is structured, checkout the [vue.js 
 ## Styles
 [Bootstrap 4](http://getbootstrap.com/) and [its plugins](https://getbootstrap.com/docs/4.0/getting-started/javascript) are loaded globally in `index.html`.
 
-[SCSS](http://sass-lang.com/guide) can be used the `<style>` sections of components by setting `<style lang="scss"`.
+[SCSS](http://sass-lang.com/guide) can be used the `<style>` sections of components by setting `<style lang="scss"`.  Global variables are stored in `src/style/_variables.scss`.

@@ -1,11 +1,14 @@
 <template>
     <div>
-        <header>
+        <!-- Full width header -->
+        <header class="ParcelHeader">
             <div class="container">
                 <div class="row justify-content-between">
+                    <!-- mb-0 undo the default bottom margin for h1 -->
                     <h1 class="col-12 col-md-3 py-3 mb-0">Parcel</h1>
                     <div class="col-12 mb-3 col-md-auto mb-md-0">
                         <span class="mr-3">I'm looking for:</span>
+                        <!-- Undo default bottom padding for selects -->
                         <use-category-dropdown
                             class="pb-0"
                             @selected="onCategorySelected"
@@ -49,7 +52,7 @@
 
                 <land-use-summary
                     class="col-12 col-md-6"
-                    v-if="summary" :summary="summary" :category="category"
+                    v-if="summary" :summary="summary" :selectedCategory="category"
                     >
                 </land-use-summary>
             </div>
@@ -110,12 +113,9 @@
 </script>
 
 <style lang="scss" scoped>
-$parcel-blue: #1b355d;
-$primary-text-color: #fff;
-
-header {
+.ParcelHeader {
     background-color: $parcel-blue;
-    color: $primary-text-color;
+    color: $light-text-color;
 }
 
 $address-search-offset: 30px;
@@ -140,7 +140,7 @@ $address-search-offset: 30px;
 
     .AddressSearchButton {
         background-color: $parcel-blue;
-        color: $primary-text-color;
+        color: $light-text-color;
     }
 }
 
