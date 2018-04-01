@@ -1,8 +1,8 @@
 <template>
   <select @change="$emit('selected', $event.target.value)" class="useCategoryDropdown">
     <option value="">Everything</option>
-    <option v-for="category in categories">
-      {{ category }}
+    <option :value="category" v-for="category in categories">
+      {{ category }} Uses
     </option>
   </select>
 </template>
