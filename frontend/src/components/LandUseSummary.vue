@@ -1,38 +1,46 @@
 <template>
-    <div id="LandUseSummaryContainer" class="no-gutters row justify-content-center">
-        <div id="LandUseSummaryContent" class="col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4">
-            <div id="LandUseSummaryHeader" class="col-12">
-                <div class="col-10 clearfix">
-                    <div class="categoryColor"></div>
-                    <div class="zoningIdentifier">
-                      {{ summary.zone.category }}, {{ summary.zone.code }}
-                    </div>
-                </div>
+    <div class="LandUseSummary">
+        <div class="LandUseSummaryHeader row">
+            <div class="col-12">
+                <span class="categoryColor"></span>
+                <span class="zoningIdentifier">
+                    {{ summary.zone.category }}, {{ summary.zone.code }}
+                </span>
+            </div>
 
-                <div class="col-10">
-                    <p class="zoningDescription">
-                        {{ summary.zone.description }}
+            <div class="col-12">
+                <p class="zoningDescription">
+                    {{ summary.zone.description }}
+                </p>
+            </div>
+        </div>
+        <template v-for="land_use in land_uses">
+            <div class="LandUse card mb-2">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ land_use.name }}
+                    </h5>
+                    <p class="card-text">
+                        {{ land_use.condition.description }}
                     </p>
                 </div>
             </div>
-            <div id="LandUses" class="col-12 clearfix">
-                <template v-for="land_use in summary.land_uses">
-                    <div class="land-use col-12">
-                        {{ land_use.name }}
-                    </div>
-                </template>
-            </div>
-        </div>
+        </template>
     </div>
 </template>
 
 <script>
 export default {
-  data () {
-    return {}
+  computed: {
+    land_uses: function () {
+      if (!this.category) {
+        return this.summary.land_uses
+      }
+      return this.summary.land_uses.filter(l => l.category === this.category)
+    }
   },
-
   props: [
+    'category',
     'summary'
   ]
 }
@@ -40,31 +48,34 @@ export default {
 
 <style scoped>
 #LandUseSummaryHeader {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+}
+
+.LandUse h5.card-title{
+    font-family: 'Source Sans Pro', serif
 }
 
 .categoryColor {
-    float: left;
-    display: inline-block;
-    height: 18px;
-    width: 18px;
-    margin-top: 0.85rem;
-    margin-right: 0.5rem;
-    border-radius: 50%;
     background-color: blue;
+    border-radius: 50%;
+    display: inline-block;
+    float: left;
+    height: 18px;
+    margin-right: 0.5rem;
+    margin-top: 0.85rem;
+    width: 18px;
 }
 
 .zoningIdentifier {
-    float: left;
     display: inline-block;
+    float: left;
     font-size: 20px;
     font-weight: bold;
     margin-top: 0.5rem;
 }
 
 .zoningDescription {
-  text-align: left;
+    text-align: left;
 }
-
 </style>

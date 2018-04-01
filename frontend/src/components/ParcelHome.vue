@@ -1,81 +1,101 @@
 <template>
-  <div>
-    <div class="no-gutters row">
-      <div class="headerContainer d-flex align-items-start primaryBackgroundColor primaryTextColor mx-auto col-12">
-        <div class="headerImageContainer primaryBackgroundColor">
-          <img src="../assets/nashville-skyline.png">
+    <div>
+        <header>
+            <div class="container">
+                <div class="row justify-content-between">
+                    <h1 class="col-12 col-md-3 py-3 mb-0">Parcel</h1>
+                    <div class="col-12 mb-3 col-md-auto mb-md-0">
+                        I'm looking for:
+                        <use-category-dropdown
+                            class="pb-0"
+                            @selected="onCategorySelected"
+                            :categories="landUseCategories">
+                        </use-category-dropdown>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Full width for background image -->
+        <div class="AddressSearchWithBackgroundImage">
+            <div class="container AddressSearch">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-6">
+                        <h1>Enter your street address</h1>
+                        <div class="input-group AddressSearchInput">
+                            <input
+                                type="text"
+                                class="form-control"
+                                @input="onAddressChanged($event.target.value)"
+                                @keyup.enter="searchLandUse"
+                                placeholder="1700 3rd Ave N, 37208"
+                            >
+                            <div class="input-group-append">
+                                <button
+                                    type="button"
+                                    class="btn AddressSearchButton"
+                                    @click="searchLandUse"
+                                >
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="w-100"></div>
 
-        <button class="btn btn-secondary textHeader ml-auto col-3" type="button">Parcel</button>
-
-        <div class="ml-auto col-8">
-
-          <use-category-dropdown
-            @selectedUse="onUseCategorySelected"
-            :uses="landUseCategories">
-          </use-category-dropdown>
-
+                <land-use-summary
+                    class="col-12 col-md-6"
+                    v-if="summary" :summary="summary" :category="category"
+                    >
+                </land-use-summary>
+            </div>
         </div>
-      </div>
     </div>
-
-    <div id="addressContentContainer" class="no-gutters row justify-content-center">
-      <div class="col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4">
-        <h2>Enter street address<br> or zoning code</h2>
-      </div>
-
-      <div class="w-100"></div>
-
-      <div id="addressInputContainer" class="col-10 col-sm-8 col-md-6 col-lg-5 col-xl-4">
-
-        <input
-          type="text"
-          name=""
-          id="addressInput"
-          @input="onAddressChanged($event.target.value)"
-          placeholder="1700 3rd Ave N, 37208 or 1238817">
-
-      </div>
-    </div>
-
-    <land-use-summary v-if="summary" :summary="summary"></land-use-summary>
-
-  </div>
 </template>
 
 <script>
-  import { debounce } from 'lodash'
-  import { mapGetters, mapActions, mapState } from 'vuex'
+  import ParcelApiClient from '@/client'
   import LandUseSummary from './LandUseSummary.vue'
   import UseCategoryDropdown from './UseCategoryDropdown.vue'
 
   export default {
     data () {
-      return {}
-    },
-
-    computed: {
-      ...mapState('parcel', { summary: state => state.landUseSummary }),
-
-      ...mapGetters({
-        landUseCategories: 'parcel/landUseCategories'
-      })
+      return {
+        summary: null,
+        category: null,
+        landUseCategories: []
+      }
     },
 
     methods: {
-      ...mapActions({
-        fetchLandUseCategories: 'parcel/fetchLandUseCategories',
-        fetchLandUseSummaryForAddress: 'parcel/fetchLandUseSummaryForAddress'
-      }),
-
-      onUseCategorySelected (use) {
-        console.info(use)
-        // TODO filter search summary land uses down to use category of interest
+      fetchLandUseCategories () {
+        ParcelApiClient
+          .getLandUseCategories()
+          .then(resp => {
+            this.landUseCategories = resp.data
+          })
       },
 
-      onAddressChanged: debounce(function (address) {
-        return this.fetchLandUseSummaryForAddress(address)
-      }, 450)
+      searchLandUse () {
+        ParcelApiClient
+          .getLandUseSummaryForAddress(this.address)
+          .then(resp => {
+            this.summary = resp.data
+          })
+          .catch(console.error)
+      },
+
+      onCategorySelected (category) {
+        this.category = category
+      },
+
+      onAddressChanged (address) {
+        this.address = address
+      }
     },
 
     components: {
@@ -89,137 +109,43 @@
 }
 </script>
 
-<style scoped>
-.primaryBackgroundColor {
-  background-color: #1B355D;
+<style lang="scss" scoped>
+$parcel-blue: #1b355d;
+$primary-text-color: #fff;
+
+header {
+    background-color: $parcel-blue;
+    color: $primary-text-color;
 }
 
-.primaryTextColor {
-  color: #FFF;
+$address-search-offset: 30px;
+
+.AddressSearchWithBackgroundImage {
+    // 50% opacity to let background-color through
+    background-color: $parcel-blue;
+    background-image: url('../assets/nashville-skyline-50%.png');
+    background-repeat: no-repeat;
+
+    margin-bottom: $address-search-offset + 20px;
+
+    h1, h2 {
+        color: white;
+    }
+
+    .AddressSearch {
+        position: relative;
+        // Lines up address search text input half on background image, half off
+        top: $address-search-offset;
+    }
+
+    .AddressSearchButton {
+        background-color: $parcel-blue;
+        color: $primary-text-color;
+    }
 }
 
-.secondaryTextColor {
-  color: #4A4A4A;
-}
-
-.headerContainer {
-  height: 10vh;
-  min-height: 4rem;
-}
-
-.headerImageContainer {
-  position: fixed;
-  margin-top: 3.8rem;
-}
-
-.headerImageContainer {
-  margin-top: 3.8rem;
-  z-index: -1;
-}
-
-.headerContainer img {
-    height: 6rem;
-    margin-bottom: -0.5rem;
-  opacity: 0.5;
-  z-index: -1;
-}
-
-.textHeader {
-    text-align: left;
-    font-size: x-large;
-    height: 10vh;
-    min-height: 4rem;
-    max-width: 6.2rem;
-    background-color: rgba(255, 255, 255, 0);
-    border: none;
-}
-
-.btn-secondary.focus, .btn-secondary:focus {
-  box-shadow: none;
-}
-
-
-#addressContentContainer {
-
-}
-
-h2 {
-  margin-top: 0.5rem;
-    text-align: left;
-    font-size: 25px;
-    color: #FFF;
-}
-
-#addressInputContainer {
-  margin-top: 0.5rem;
-}
-
-#addressInput {
+.AddressSearchInput {
     height: 3.5rem;
-    width: 100%;
-    padding: 3px 10px;
-    border: 1px solid #ccc;
-    border-radius: 0.3rem;
-    box-shadow: 0px 0px 1px 0.25px rgba(204,204,204,1);
-}
-@media (min-width: 575px) {
-  .headerContainer img {
-    height: initial;
-  }
 }
 
-@media (min-width: 767px) {
-  .textHeader {
-      font-size: 3vw;
-  }
-
-  #addressContentContainer {
-      margin-top: 4%;
-  }
-}
-
-@media (min-width: 992px) {
-  #addressContentContainer {
-      margin-top: 5%;
-  }
-
-  h2 {
-    font-size: 30px;
-  }
-}
-
-@media (min-width: 1199px) {
-  .headerContainer {
-      height: 5rem;
-      max-width: 1440px;
-  }
-
-  .subheaderContainer {
-      max-width: 1440px;
-  }
-
-  .textHeader {
-      height: 5rem;
-      text-align: left;
-      font-size: 2.2rem;
-  }
-
-  #addressContentContainer {
-      margin-top: 4.5%;
-  }
-
-  h2 {
-    font-size: 35px;
-  }
-}
-
-@media (min-width: 1440px) {
-  .textHeader {
-      padding-left: 2.5rem;
-  }
-
-  #addressContentContainer {
-      margin-top: 5rem;
-  }
-}
 </style>
