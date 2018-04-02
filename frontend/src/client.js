@@ -27,4 +27,4 @@ class ParcelApiClient {
   }
 }
 
-export default new ParcelApiClient('http://localhost:4000/api')
+export default new ParcelApiClient('/api')
