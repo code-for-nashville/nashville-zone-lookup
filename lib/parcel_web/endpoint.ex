@@ -10,9 +10,10 @@ defmodule ParcelWeb.Endpoint do
   plug(
     Plug.Static,
     at: "/static",
-    from: :parcel,
+    # Use our SPA for the static files
+    from: "frontend/dist/static",
     gzip: Application.get_env(:parcel, :gzip_static),
-    only: ~w(css fonts img js index.html favicon.png robots.txt cache_manifest.json)
+    only: ~w(css img js favicon.png robots.txt cache_manifest.json)
   )
 
   # Code reloading can be explicitly enabled under the

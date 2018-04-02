@@ -30,7 +30,7 @@ _Note: Additional commands are available for the frontend app and are documented
 To build and run this app for production:
 - Install the Mix dependencies `mix deps.get`.
 - Compile the project `mix compile`.
-- Build and copy the frontend app to the Phoenix server `mix parcel.prepare_static_assets`.
+- Build the frontend app for the Phoenix server `mix parcel.prepare_static_assets`.
 - Run the Phoenix server `mix phx.server`.
 
 ## Testing
