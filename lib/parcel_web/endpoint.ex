@@ -3,16 +3,16 @@ defmodule ParcelWeb.Endpoint do
 
   socket("/socket", ParcelWeb.UserSocket)
 
-  # Serve at "/" the static files from "priv/static" directory.
+  # Serve at "/static" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
   plug(
     Plug.Static,
-    at: "/",
+    at: "/static",
     from: :parcel,
-    gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    gzip: Application.get_env(:parcel, :gzip_static),
+    only: ~w(css fonts img js index.html favicon.png robots.txt cache_manifest.json)
   )
 
   # Code reloading can be explicitly enabled under the

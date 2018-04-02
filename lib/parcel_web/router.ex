@@ -26,6 +26,6 @@ defmodule ParcelWeb.Router do
     # Use the default browser stack
     pipe_through(:browser)
 
-    get("/*page", PageController, :index)
+    get("/", SinglePageAppController, :index)
   end
 end

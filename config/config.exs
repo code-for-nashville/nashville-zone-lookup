@@ -18,6 +18,9 @@ config :parcel, ParcelWeb.Endpoint,
 # configures address candidate API to use
 config :parcel, :nashville_arc_gis_api, Parcel.NashvilleArcgisApi.HttpClient
 
+# disable gzip in dev
+config :parcel, :gzip_static, false
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

@@ -5,7 +5,7 @@ defmodule Mix.Tasks.Parcel.PrepareStaticAssets do
 
   @assets_source "frontend"
   @assets_target "priv/static"
-  @asset_types ["css", "js"]
+  @asset_types ["css", "js", "img"]
   @asset_types_with_source_maps ["css", "js"]
 
   def run(_args) do
