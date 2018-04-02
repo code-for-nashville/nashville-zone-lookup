@@ -128,7 +128,7 @@ $address-search-offset: 30px;
 .AddressSearchWithBackgroundImage {
     // 50% opacity to let background-color through
     background-color: $parcel-blue;
-    background-image: url('../assets/nashville-skyline-50%.png');
+    background-image: url('~/static/img/nashville-skyline.png');
     background-repeat: no-repeat;
 
     margin-bottom: $address-search-offset + 20px;
