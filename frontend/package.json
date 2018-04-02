@@ -7,12 +7,15 @@
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
-    "build": "node build/build.js && cp dist/static/js/*.js dist/static/js/*.map ../priv/static/js/. && cp dist/static/css/*.css dist/static/css/*.map ../priv/static/css/.",
+    "build": "node build/build.js",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs"
   },
   "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.5",
+    "@fortawesome/fontawesome-free-solid": "^5.0.9",
+    "@fortawesome/vue-fontawesome": "^0.0.22",
     "axios": "^0.17.0",
     "lodash": "^4.17.5",
     "vue": "^2.3.3",

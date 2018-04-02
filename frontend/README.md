@@ -33,3 +33,6 @@ For detailed explanation on how the project is structured, checkout the [vue.js 
 [Bootstrap 4](http://getbootstrap.com/) and [its plugins](https://getbootstrap.com/docs/4.0/getting-started/javascript) are loaded globally in `index.html`.
 
 [SCSS](http://sass-lang.com/guide) can be used the `<style>` sections of components by setting `<style lang="scss"`.  Global variables are stored in `src/style/_variables.scss`.
+
+## Icons
+This uses [`vue-fontawesome`](https://github.com/FortAwesome/vue-fontawesome) for a Vue wrapper around the venerable [FontAwesome]() project.  Most importantly, this enables importing individual icons rather than the entire font collection using its `import faCoffee from '@fortawesome/fontawesome-free-solid/faCoffee'` syntax.

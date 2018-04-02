@@ -19,6 +19,9 @@ erl_crash.dump
 /priv/static/css
 /priv/static/js
 !/priv/static/js/phoenix.js
+/priv/static/cache_manifest.json
+/priv/static/robots-*
+/priv/static/*.gz
 
 # VS Code
 /.vscode

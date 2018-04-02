@@ -38,7 +38,7 @@
                                     class="btn AddressSearchButton"
                                     @click="searchLandUse"
                                 >
-                                    <i class="fas fa-search"></i>
+                                    <font-awesome-icon :icon="searchIcon"></font-awesome-icon>
                                 </button>
                             </div>
                         </div>
@@ -61,6 +61,9 @@
 </template>
 
 <script>
+  import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+  import faSearch from '@fortawesome/fontawesome-free-solid/faSearch'
+
   import ParcelApiClient from '@/client'
   import LandUseSummary from './LandUseSummary.vue'
   import UseCategoryDropdown from './UseCategoryDropdown.vue'
@@ -68,9 +71,10 @@
   export default {
     data () {
       return {
-        summary: null,
         category: null,
-        landUseCategories: []
+        landUseCategories: [],
+        searchIcon: faSearch,
+        summary: null
       }
     },
 
@@ -102,6 +106,7 @@
     },
 
     components: {
+      FontAwesomeIcon,
       LandUseSummary,
       UseCategoryDropdown
     },

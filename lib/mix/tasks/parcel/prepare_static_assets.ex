@@ -19,8 +19,8 @@ defmodule Mix.Tasks.Parcel.PrepareStaticAssets do
   end
 
   defp build_assets do
-    {_, 0} = System.cmd("npm", ["install"], cd: "./#{@assets_source}")
-    {_, 0} = System.cmd("npm", ["run", "build"], cd: "./#{@assets_source}")
+    {_, 0} = System.cmd("yarn", ["install"], cd: "./#{@assets_source}")
+    {_, 0} = System.cmd("yarn", ["run", "build"], cd: "./#{@assets_source}")
   end
 
   defp copy_assets do
@@ -34,6 +34,9 @@ defmodule Mix.Tasks.Parcel.PrepareStaticAssets do
     map_files = Path.wildcard("./#{@assets_source}/dist/static/#{asset_type}/*.map")
     target_dir = "./#{@assets_target}/#{asset_type}"
 
+    # Ensure the directory exists
+    {_, 0} = System.cmd("mkdir", ["-p", target_dir])
+    # Copy the files
     {_, 0} = System.cmd("cp", List.flatten([source_files, map_files, target_dir]))
   end
 end

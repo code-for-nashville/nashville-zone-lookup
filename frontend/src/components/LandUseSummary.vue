@@ -39,7 +39,7 @@
                     @click="enableDisplayOtherUses()"
                     v-if="showOtherUsesExpander"
                 >
-                    View Other Uses <i class="fa fa-caret-down"></i>
+                    View Other Uses <font-awesome-icon :icon="caretDownIcon"></font-awesome-icon>
                 </button>
             </div>
         </div>
@@ -48,10 +48,14 @@
 
 <script>
 import { groupBy } from 'lodash'
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+import faCaretDown from '@fortawesome/fontawesome-free-solid/faCaretDown'
+
 import LandUseSection from './LandUseSection.vue'
 
 export default {
   components: {
+    FontAwesomeIcon,
     LandUseSection
   },
   computed: {
@@ -70,6 +74,7 @@ export default {
   },
   data () {
     return {
+      caretDownIcon: faCaretDown,
       displayOtherUses: false
     }
   },
