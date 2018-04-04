@@ -1,6 +1,6 @@
 <template>
 <b-dropdown :text="displayCategory(category)" class="UseCategoryDropdown" right>
-  <b-dropdown-item-button :key="category" class="category-item" @click="onCategorySelected('')">Everything</b-dropdown-item-button>
+  <b-dropdown-item-button class="category-item" @click="onCategorySelected('')">Everything</b-dropdown-item-button>
   <b-dropdown-item-button :key="category" class="category-item" :value="category" v-for="category in categories" @click="onCategorySelected(category)">
     {{ category }} Uses
   </b-dropdown-item-button>
