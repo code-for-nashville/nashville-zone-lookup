@@ -27,4 +27,8 @@ class ParcelApiClient {
   }
 }
 
-export default new ParcelApiClient('/api')
+const APIROOT = process.env.NODE_ENV === 'production'
+  ? ''
+  : 'http://localhost:4000'
+
+export default new ParcelApiClient(`${APIROOT}/api`)
