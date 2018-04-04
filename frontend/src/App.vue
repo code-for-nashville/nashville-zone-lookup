@@ -11,6 +11,7 @@ export default {
 </script>
 
 <style lang="scss">
+ @import './style/app.scss';
 html, body {
   font-family: 'Source Sans Pro', sans-serif;
   -webkit-font-smoothing: antialiased;

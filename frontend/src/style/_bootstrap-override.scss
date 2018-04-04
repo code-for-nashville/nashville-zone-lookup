@@ -1,0 +1,10 @@
+.btn-secondary, .dropdown-menu {
+    background-color: $parcel-blue;
+    border-color: $parcel-blue;
+  }
+
+.btn-secondary:hover, .btn-secondary:active:focus, .show > .btn-secondary.dropdown-toggle {
+    background-color: $secondary-blue !important;
+    box-shadow: none;
+    outline:0;
+}
