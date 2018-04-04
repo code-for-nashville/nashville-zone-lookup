@@ -1,7 +1,7 @@
 <template>
-<b-dropdown :text="category" class="UseCategoryDropdown" right>
-  <b-dropdown-item-button class="category-item" @click="onCategorySelected('Everything')">Everything</b-dropdown-item-button>
-  <b-dropdown-item-button class="category-item" :value="category" v-for="category in categories" @click="onCategorySelected(category)">
+<b-dropdown :text="displayCategory(category)" class="UseCategoryDropdown" right>
+  <b-dropdown-item-button :key="category" class="category-item" @click="onCategorySelected('')">Everything</b-dropdown-item-button>
+  <b-dropdown-item-button :key="category" class="category-item" :value="category" v-for="category in categories" @click="onCategorySelected(category)">
     {{ category }} Uses
   </b-dropdown-item-button>
   </b-dropdown>
@@ -13,7 +13,14 @@ import bDropdownItemButton from 'bootstrap-vue/es/components/dropdown/dropdown-i
 export default {
   name: 'category-dropdown',
   props: ['categories', 'onCategorySelected', 'category'],
-  components: {bDropdown, bDropdownItemButton}
+  components: {bDropdown, bDropdownItemButton},
+  methods: {
+    displayCategory (category) {
+      const display = category ? `${category} Uses` : 'Everything'
+      return display
+    }
+  }
+
 }
 </script>
 

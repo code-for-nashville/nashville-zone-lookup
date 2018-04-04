@@ -72,7 +72,7 @@
   export default {
     data () {
       return {
-        category: 'Everything',
+        category: null,
         landUseCategories: [],
         searchIcon: faSearch,
         summary: null
