@@ -55,7 +55,7 @@ To test the frontend:
 `mix ecto.drop && mix ecto.setup && mix ecto.migrate`
 
 ## Heroku Deployment
-Follow the steps in [Phoenix's Heroku deployment](https://hexdocs.pm/phoenix/heroku.html#content) to generate your own deployment.
+This repository is configured to deploy master automatically to Heroku via Travis CI.
 
 ## Planning
 - For a detailed description of the project, check out the [Request for Volunteers](https://docs.google.com/document/d/17DNk0QQyi8SEK4utcMt3zT-Dc6vXzA_zcFwrEENvKJo/edit?usp=sharing).
