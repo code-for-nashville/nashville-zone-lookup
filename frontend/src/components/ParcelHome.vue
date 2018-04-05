@@ -11,8 +11,9 @@
                         <!-- Undo default bottom padding for selects -->
                         <use-category-dropdown
                             class="pb-0"
-                            @selected="onCategorySelected"
-                            :categories="landUseCategories">
+                            :onCategorySelected="onCategorySelected"
+                            :categories="landUseCategories"
+                            :category="category">
                         </use-category-dropdown>
                     </div>
                 </div>
