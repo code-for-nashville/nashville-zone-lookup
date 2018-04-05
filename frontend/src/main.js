@@ -5,6 +5,11 @@ import BootstrapVue from 'bootstrap-vue'
 import { Dropdown } from 'bootstrap-vue/es/components'
 import App from './App'
 import router from './router'
+import bugsnag from 'bugsnag-js'
+import bugsnagVue from 'bugsnag-vue'
+
+const bugsnagClient = bugsnag('28cc2de41c1613dd5edefe36f55df02b')
+bugsnagClient.use(bugsnagVue(Vue))
 
 Vue.config.productionTip = false
 
