@@ -49,8 +49,10 @@
         </div>
         <div class="container">
             <div class="row justify-content-center">
+                <div class="col-12  col-md-6">
+                  <error-notification v-if="errorMessage" :message="errorMessage"></error-notification>
+                </div>
                 <div class="w-100"></div>
-
                 <land-use-summary
                     class="col-12 col-md-6"
                     v-if="summary" :summary="summary" :selectedCategory="category"
@@ -66,6 +68,7 @@
   import faSearch from '@fortawesome/fontawesome-free-solid/faSearch'
 
   import ParcelApiClient from '@/client'
+  import ErrorNotification from './ErrorNotification.vue'
   import LandUseSummary from './LandUseSummary.vue'
   import UseCategoryDropdown from './UseCategoryDropdown.vue'
 
@@ -73,6 +76,7 @@
     data () {
       return {
         category: null,
+        errorMessage: null,
         landUseCategories: [],
         searchIcon: faSearch,
         summary: null
@@ -83,18 +87,34 @@
       fetchLandUseCategories () {
         ParcelApiClient
           .getLandUseCategories()
-          .then(resp => {
-            this.landUseCategories = resp.data
+          .then(resp => resp.json())
+          .then(data => {
+            this.landUseCategories = data
           })
       },
 
       searchLandUse () {
+        const address = this.address.trim()
+        if (!address) {
+          return
+        }
+
         ParcelApiClient
-          .getLandUseSummaryForAddress(this.address)
-          .then(resp => {
-            this.summary = resp.data
+          .getLandUseSummaryForAddress(address)
+          .then(resp => Promise.all([resp, resp.json()]))
+          .then(([resp, data]) => {
+            if (resp.ok) {
+              this.summary = data
+              this.errorMessage = null
+            } else {
+              this.summary = null
+              this.errorMessage = data.message
+            }
           })
-          .catch(console.error)
+          .catch(err => {
+            console.error(err)
+            this.errorMessage = 'Unknown server error - please try again later.'
+          })
       },
 
       onCategorySelected (category) {
@@ -107,6 +127,7 @@
     },
 
     components: {
+      ErrorNotification,
       FontAwesomeIcon,
       LandUseSummary,
       UseCategoryDropdown
