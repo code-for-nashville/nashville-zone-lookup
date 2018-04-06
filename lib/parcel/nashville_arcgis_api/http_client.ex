@@ -24,11 +24,11 @@ defmodule Parcel.NashvilleArcgisApi.HttpClient do
           point_map = address_match["location"]
           {:ok, {point_map["x"], point_map["y"]}}
         else
-          {:error, "No candidates returned"}
+          {:not_found, "No candidates returned"}
         end
 
       {:error, %HTTPoison.Error{reason: reason}} ->
-        {:error, "Server error #{reason}"}
+        {:error, "Error #{reason}"}
     end
   end
 
