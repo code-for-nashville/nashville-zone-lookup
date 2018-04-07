@@ -9,15 +9,20 @@ defmodule Parcel.NashvilleArcgisApi.Client do
   """
   @type point :: {float, float}
 
+  @typedoc """
+  An error consists of an Atom label, and a String message
+  """
+  @type error :: {Atom, String}
+
   @doc """
   Retrieve a geocode for a given Nashville address.
   """
-  @callback geocode_address(address :: String) :: {:ok, point} | {:error, String}
+  @callback geocode_address(address :: String) :: {:ok, point} | error
 
   @doc """
   Retrieve the short Zoning code for a geographic point in Nashville.
 
   For example, "MUI", "AG".
   """
-  @callback get_zone(point :: point) :: {:ok, String} | {:error, String}
+  @callback get_zone(point :: point) :: {:ok, String} | error
 end

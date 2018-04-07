@@ -83,4 +83,27 @@ defmodule ParcelWeb.LandUsesControllerTest do
 
     assert json_response(conn, 200) == expected
   end
+
+  test "Missing zones return a 422", %{conn: conn} do
+    MockClient
+    |> expect(:geocode_address, fn _ -> {:ok, {0, 0}} end)
+    # Deliberately don't put the zone in
+    |> expect(:get_zone, fn _ -> {:ok, "IR"} end)
+
+    conn =
+      get(conn, api_land_uses_path(conn, :index, address: "500 Interstate Blvd S, Suite 300"))
+
+    assert(conn.status == 422)
+  end
+
+  test "Unknown address return a 404", %{conn: conn} do
+    MockClient
+    # Return a not found
+    |> expect(:geocode_address, fn _ -> {:not_found, ""} end)
+
+    conn =
+      get(conn, api_land_uses_path(conn, :index, address: "500 Interstate Blvd S, Suite 300"))
+
+    assert(conn.status == 404)
+  end
 end
