@@ -7,7 +7,7 @@
                     <!-- mb-0 undo the default bottom margin for h1 -->
                     <h1 class="col-12 col-md-3 py-3 mb-0">Parcel</h1>
                     <div class="col-12 mb-3 col-md-auto mb-md-0">
-                        <span class="mr-3">I'm looking for:</span>
+                        <span class="UseCategoryDropdownLabel">I'm looking for:</span>
                         <!-- Undo default bottom padding for selects -->
                         <use-category-dropdown
                             class="pb-0"
@@ -143,6 +143,11 @@
 .ParcelHeader {
     background-color: $parcel-blue;
     color: $light-text-color;
+}
+
+.UseCategoryDropdownLabel {
+  // Lines the label text up with the button text
+  vertical-align: sub;
 }
 
 $address-search-offset: 30px;

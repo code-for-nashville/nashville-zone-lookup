@@ -30,6 +30,11 @@ export default {
   color: $light-text-color;
   font-weight: 500;
   height: 4rem;
+
+  @media (min-width: 1199px) {
+    height: 100%;
+  }
+
   min-width: 18rex;
 
   .category-item {
@@ -44,9 +49,7 @@ export default {
   }
 }
 
-@media (min-width: 1199px) {
   .UseCategoryDropdown {
-    height: 100%;
-  }
+
 }
 </style>
