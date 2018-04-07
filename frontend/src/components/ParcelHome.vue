@@ -148,10 +148,16 @@
 $address-search-offset: 30px;
 
 .AddressSearchWithBackgroundImage {
-    // 50% opacity to let background-color through
     background-color: $parcel-blue;
-    background-image: url('~/static/img/nashville-skyline.png');
-    background-repeat: no-repeat;
+
+    // The image doesn't look like much on smaller devices
+    // + a little performance bonus on mobile
+    @media (min-width: 576px) {
+      // This image is optimized to the height of the container on medium devices
+      // ~160px height on mobile, 1280px wide on desktop
+      background-image: url('~/static/img/nashville-skyline-small-50-percent-transparent.png');
+      background-repeat: no-repeat;
+    }
 
     margin-bottom: $address-search-offset + 20px;
 
@@ -170,6 +176,7 @@ $address-search-offset: 30px;
         color: $light-text-color;
     }
 }
+
 
 .AddressSearchInput {
     height: 3.5rem;

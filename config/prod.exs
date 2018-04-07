@@ -23,8 +23,8 @@ config :parcel, ParcelWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
-# disable gzip in dev
-config :parcel, :gzip_static, false
+# Enable gzip of static files in prod
+config :parcel, :gzip_static, true
 
 # Configure our database
 config :parcel, Parcel.Repo,
