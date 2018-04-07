@@ -9,7 +9,14 @@ function resolve (dir) {
 
 module.exports = {
   entry: {
-    app: ['whatwg-fetch', './src/main.js']
+    app: [
+      // Globally pollyfill fetch.
+      // To make fetch work on IE10/11, add a Promise pollyfill as an entry
+      // as well. The more intuitive route of letting babel-preset-env polyfill
+      // Promise was still causing "Promise not defined" for fetch in IE11.
+      'core-js/es6/promise', 'whatwg-fetch',
+      './src/main.js'
+    ]
   },
   output: {
     path: config.build.assetsRoot,
