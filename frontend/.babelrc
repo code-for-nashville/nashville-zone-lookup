@@ -1,6 +1,10 @@
 {
   "presets": [
     ["env", {
+      // fetch is made globally available by adding it as an entry in
+      // webpack.base.conf.js. To make fetch function on ie10/11, globally
+      // include our Promise pollyfil as well.
+      "include": ["es6.promise"],
       "modules": false,
       "targets": {
         "browsers": ["> 1%", "last 2 versions", "not ie <= 8"]
