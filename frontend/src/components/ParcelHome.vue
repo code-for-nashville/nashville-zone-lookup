@@ -75,6 +75,7 @@
   export default {
     data () {
       return {
+        address: '',
         category: null,
         errorMessage: null,
         landUseCategories: [],
