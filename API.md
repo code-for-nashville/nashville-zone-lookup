@@ -160,9 +160,7 @@ where code = 'MUI';
 ```
 
 ```
-"Mixed Use",
-MUI,
-"Mixed-use intensive.  High intensity mixture of residential, office, personal service and retail shopping."
+"Mixed Use", MUI, "Mixed-use intensive.  High intensity mixture of residential, office, personal service and retail shopping."
 ```
 
 3. Get information on all the land use conditions for the zoning code from our `zone_land_use_conditions` table.
@@ -188,7 +186,7 @@ z.code = 'MUI';
 
 ## Errors
 
-The current version of the API uses HTTP status codes to represent different error cases.  A 200 is an 👌 response.
+The current version of the API uses HTTP status codes to represent different error cases.
 
 | HTTP status code | error condition |
 | -- | -- |
