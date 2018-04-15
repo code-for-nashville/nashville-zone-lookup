@@ -10,12 +10,12 @@ Our `/api/landuses` endpoint accepts a [geographic point](https://developers.arc
 
 ## Response
 
-The endpoint returs an object in the following shape:
+The endpoint returns an object in the following shape:
 
 | key | type | description |
 | -- | -- | -- |
-| zone | `Zone` | The Zone of the geographic point |
-| land_uses | List of `LandUses` | A list of land uses. Each `LandUse` object also includes a `LandUseCondition` object describing the conditions under which it is permitted withing the `zone` of the geographic point |
+| zone | `Zone` | High level description of the zoning district of the geographic point.  See description of the `Zone` below object for more info. |
+| land_uses | List of `LandUses` | A list of land uses. Each `LandUse` object also includes a `LandUseCondition` object describing the conditions under which it is permitted within the `zone` of the geographic point.  See description of the objects below for more information. |
 
 ### Objects
 
@@ -23,27 +23,27 @@ The endpoint returs an object in the following shape:
 
 | key | type | description |
 | -- | -- | -- |
-| code | string | The short zoning code, e.g. "RS-80" |
+| code | string | The short zoning code, e.g. "RS-80". |
 | description | string | A short sentence describing the zone. |
-| category | string | The category this zone falls into, e.g. "Residential" or "Industrial" |
+| category | string | The category this zone falls into, e.g. "Residential" or "Industrial". |
 
 `LandUseCondition` - A description of a constraint on a land use.
 
 | key | type | description |
 | -- | -- | -- |
-| category | string | To help with representing these constraints in the UI, we categorize conditions as either `permitted`, `not_permitted`, or `conditionally_permitted` |
-| code | string | The short code for the condition, e.g. "P", "NP" |
-| description | string | A short sentence describing the constraint |
-| info_link | string | A URL with more information about the constraint, e.g. https://library.municode.com/tn/metro_government_of_nashville_and_davidson_county/codes/code_of_ordinances?nodeId=CD_TIT17ZO_CH17.16LAUSDEST_ARTIIUSPECOPC |
+| category | string | To help with representing these constraints in the UI, we categorize conditions as either `permitted`, `not_permitted`, or `conditionally_permitted`. |
+| code | string | The short code for the condition, e.g. "P", "NP". |
+| description | string | A short sentence describing the constraint. |
+| info_link | string | A URL with more information about the constraint, e.g. https://library.municode.com/tn/metro_government_of_nashville_and_davidson_county/codes/code_of_ordinances?nodeId=CD_TIT17ZO_CH17.16LAUSDEST_ARTIIUSPECOPC. |
 
 
 `LandUse`
 
 | key | type | description |
 | -- | -- | -- |
-| category | string | The category of land use, e.g "Educational" |
-| name | string | The name of the land use, e.g. "Hospital", "Correctional Facility" |
-| condition | `LandUseCondition` | An object describing the conditions under which this land use is permitted in a returned zone |
+| category | string | The category of land use, e.g "Educational". |
+| name | string | The name of the land use, e.g. "Hospital", "Correctional Facility". |
+| condition | `LandUseCondition` | An object describing the conditions under which this land use is permitted in a returned zone. |
 
 ### Example
 
@@ -51,7 +51,7 @@ This retrieves land use information for 307 31st Ave N., an apartment building i
 
 _Query_: `/api/landuses?address=307%2031st%20Ave%20N.`
 
-_Response_: Note that `land_uses` is truncated to only include a few exampe entries - the actual response includes an entry for each land use.
+_Response_: Note that `land_uses` is truncated to only include a few example entries - the actual response includes an entry for each land use.
 
 ```json
 {
@@ -103,13 +103,13 @@ The API follows these these steps:
 
 | param | value | note |
 | -- | -- | -- |
-| f | "json" | return JSON formatted data |
-| geometry | x,y | the x,y value of the point |
-| geometryType | "esriGeometryPoint" | indicate that we're searching for a point |
-| returnGeometry | false | we don't want to return the shape of the zone, just the code |
-| outFields | "ZONE_DESC" | We just need a ZONE_DESC |
-| inSR | 3857 | Web Mercator spatial reference |
-| outSR | 3857 | Web Mercator spatial reference |
+| f | "json" | return JSON formatted data. |
+| geometry | x,y | the x,y value of the point. |
+| geometryType | "esriGeometryPoint" | indicate that we're searching for a point. |
+| returnGeometry | false | we don't want to return the shape of the zone, just the code. |
+| outFields | "ZONE_DESC" | Minimal out put fields - the `ZONE_DESC` is the zone code. |
+| inSR | 3857 | Web Mercator spatial reference. |
+| outSR | 3857 | Web Mercator spatial reference. |
 
 Example query and response:
 
@@ -192,6 +192,6 @@ The current version of the API uses HTTP status codes to represent different err
 
 | HTTP status code | error condition |
 | -- | -- |
-| `404` | The point passed in doesn't match a known Nashville |
+| `404` | The point passed in doesn't match a known Nashville. |
 | `422` | The address was found, but we don't have zoning or land use information available. We might be missing information if *a)* the point is in a Satellite City, like Berry Hill, or *b)* we have a gap in our land use information.  For example, if our land use doesn't include a hypothetical zone code (RS-80-Z), we could return this status. |
 | `500` | An unknown internal server error occurred. |
