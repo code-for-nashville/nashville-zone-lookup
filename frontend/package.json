@@ -1,7 +1,7 @@
 {
-  "name": "parcel-frontend",
+  "name": "nashville-zone-lookup-frontend",
   "version": "0.1.0",
-  "description": "VueJS frontend for Code for Nashville's Parcel app.",
+  "description": "VueJS frontend for Code for Nashville's NashvilleZoneLookup app.",
   "author": "Jordan Davis <jdcville@gmail.com>",
   "private": true,
   "scripts": {

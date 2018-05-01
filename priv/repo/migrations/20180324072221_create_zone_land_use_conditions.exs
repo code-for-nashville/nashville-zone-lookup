@@ -1,4 +1,4 @@
-defmodule Parcel.Repo.Migrations.CreateZoningDistrinctLandUseConditions do
+defmodule NashvilleZoneLookup.Repo.Migrations.CreateZoningDistrinctLandUseConditions do
   use Ecto.Migration
 
   def change do

@@ -1,4 +1,4 @@
-defmodule Parcel.Repo.Migrations.LandUseAddUniqueConstrainName do
+defmodule NashvilleZoneLookup.Repo.Migrations.LandUseAddUniqueConstrainName do
   use Ecto.Migration
 
   def change do

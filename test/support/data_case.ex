@@ -1,4 +1,4 @@
-defmodule Parcel.DataCase do
+defmodule NashvilleZoneLookup.DataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -16,20 +16,20 @@ defmodule Parcel.DataCase do
 
   using do
     quote do
-      alias Parcel.Repo
+      alias NashvilleZoneLookup.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Parcel.DataCase
+      import NashvilleZoneLookup.DataCase
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Parcel.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(NashvilleZoneLookup.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Parcel.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(NashvilleZoneLookup.Repo, {:shared, self()})
     end
 
     :ok

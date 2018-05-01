@@ -1,9 +1,9 @@
-defmodule Parcel.Mixfile do
+defmodule NashvilleZoneLookup.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app: :parcel,
+      app: :nashville_zone_lookup,
       version: "0.0.1",
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -20,7 +20,7 @@ defmodule Parcel.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {Parcel.Application, []},
+      mod: {NashvilleZoneLookup.Application, []},
       extra_applications: [:logger, :runtime_tools, :httpoison]
     ]
   end

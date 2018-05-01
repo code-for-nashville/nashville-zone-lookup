@@ -1,4 +1,4 @@
-defmodule ParcelWeb.ChannelCase do
+defmodule NashvilleZoneLookupWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -21,15 +21,15 @@ defmodule ParcelWeb.ChannelCase do
       use Phoenix.ChannelTest
 
       # The default endpoint for testing
-      @endpoint ParcelWeb.Endpoint
+      @endpoint NashvilleZoneLookupWeb.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Parcel.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(NashvilleZoneLookup.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Parcel.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(NashvilleZoneLookup.Repo, {:shared, self()})
     end
 
     :ok

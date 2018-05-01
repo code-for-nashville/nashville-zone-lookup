@@ -6,20 +6,20 @@
 use Mix.Config
 
 # general application configuration
-config :parcel, ecto_repos: [Parcel.Repo]
+config :nashville_zone_lookup, ecto_repos: [NashvilleZoneLookup.Repo]
 
 # Configures the endpoint
-config :parcel, ParcelWeb.Endpoint,
+config :nashville_zone_lookup, NashvilleZoneLookupWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "zLG/tBftJI2Jf2PBgQNAjta6anAIO4keIwZf75AhdBFUl1Zfvsd9seHwg6iaGwxY",
-  render_errors: [view: ParcelWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Parcel.PubSub, adapter: Phoenix.PubSub.PG2]
+  render_errors: [view: NashvilleZoneLookupWeb.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: NashvilleZoneLookup.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # configures address candidate API to use
-config :parcel, :nashville_arc_gis_api, Parcel.NashvilleArcgisApi.HttpClient
+config :nashville_zone_lookup, :nashville_arc_gis_api, NashvilleZoneLookup.NashvilleArcgisApi.HttpClient
 
 # disable gzip in dev
-config :parcel, :gzip_static, false
+config :nashville_zone_lookup, :gzip_static, false
 
 # Configures Elixir's Logger
 config :logger, :console,

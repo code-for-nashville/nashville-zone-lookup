@@ -1,4 +1,4 @@
-defmodule Parcel.Repo.Migrations.CreateZones do
+defmodule NashvilleZoneLookup.Repo.Migrations.CreateZones do
   use Ecto.Migration
 
   def change do

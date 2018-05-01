@@ -1,5 +1,5 @@
-# Parcel Frontend
-Vue.js frontend for Code for Nashville's Parcel app.
+# Nashville Zone Lookup Frontend
+Vue.js frontend for Code for Nashville's Nashville Zone Lookup app.
 
 ## Build Setup
 
@@ -38,4 +38,4 @@ We use [Bootstrap 4](http://getbootstrap.com/) via [Bootsrap Vue](https://bootst
 This uses [`vue-fontawesome`](https://github.com/FortAwesome/vue-fontawesome) for a Vue wrapper around the venerable [FontAwesome]() project.  Most importantly, this enables importing individual icons rather than the entire font collection using its `import faCoffee from '@fortawesome/fontawesome-free-solid/faCoffee'` syntax.
 
 ## Bug Tracking
-Because it's nice and free for open source projects, we use [BugSnag](app.bugsnag.com/code-for-nashville/parcel) to track frontend errors.  Contact one of the repository owners for access.
+Because it's nice and free for open source projects, we use [BugSnag](app.bugsnag.com/code-for-nashville/nashville-zone-lookup) to track frontend errors.  Contact one of the repository owners for access.

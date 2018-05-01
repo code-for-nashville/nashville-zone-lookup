@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import ParcelHome from '@/components/ParcelHome'
+import NashvilleZoneLookupHome from '@/components/NashvilleZoneLookupHome'
 
 Vue.use(Router)
 
@@ -8,8 +8,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'ParcelHome',
-      component: ParcelHome
+      name: 'NashvilleZoneLookupHome',
+      component: NashvilleZoneLookupHome
     }
   ]
 })
