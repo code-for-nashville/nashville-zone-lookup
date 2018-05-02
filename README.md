@@ -21,7 +21,7 @@ To build and run this app locally:
 - Navigate to frontend app `cd frontend`.
 - Install the NPM dependencies `npm install`.
 - Run the frontend's HTTP server `npm run dev`.
-- Run the database in the background with `docker run -p 5432:5432 --name nashville_zone_lookup_db -d postgres:9.6`.
+- Run the database in the background with `docker run -p 5432:5432 --name nashville_zone_lookup_dev -d postgres:9.6`.
 - Create and migrate your database with `mix ecto.setup && mix ecto.migrate`
 - Optionally run the [Postgres shell](https://www.postgresql.org/docs/current/static/app-psql.html) with `docker exec -it nashville_zone_lookup_db psql -U postgres nashville_zone_lookup_dev`
 
