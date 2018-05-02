@@ -163,6 +163,7 @@ $address-search-offset: 30px;
       // ~160px height on mobile, 1280px wide on desktop
       background-image: url('~/static/img/nashville-skyline-small-50-percent-transparent.png');
       background-repeat: no-repeat;
+      background-size: cover;
     }
 
     margin-bottom: $address-search-offset + 20px;
