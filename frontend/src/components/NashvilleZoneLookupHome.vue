@@ -194,10 +194,6 @@ $address-search-offset: 30px;
         background-color: $nashville-zone-lookup-blue;
         color: $light-text-color;
     }
-
-    .v-spinner {
-      background-color: $nashville-zone-lookup-blue !important;
-    }
 }
 
 
