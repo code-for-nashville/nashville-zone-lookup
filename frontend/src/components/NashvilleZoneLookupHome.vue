@@ -49,6 +49,9 @@
         </div>
         <div class="container">
             <div class="row justify-content-center">
+                <!-- :color is $nashville-zone-lookup-blue -->
+                <pulse-loader :loading="loading" :color="'#1b355d'"></pulse-loader>
+                <div class="w-100"></div>
                 <div class="col-12  col-md-6">
                   <error-notification v-if="errorMessage" :message="errorMessage"></error-notification>
                 </div>
@@ -66,6 +69,7 @@
 <script>
   import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
   import faSearch from '@fortawesome/fontawesome-free-solid/faSearch'
+  import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
   import NashvilleZoneLookupApiClient from '@/client'
   import ErrorNotification from './ErrorNotification.vue'
@@ -79,6 +83,7 @@
         category: null,
         errorMessage: null,
         landUseCategories: [],
+        loading: false,
         searchIcon: faSearch,
         summary: null
       }
@@ -100,6 +105,9 @@
           return
         }
 
+        this.loading = true
+        this.errorMessage = null
+
         NashvilleZoneLookupApiClient
           .getLandUseSummaryForAddress(address)
           .then(resp => Promise.all([resp, resp.json()]))
@@ -116,6 +124,9 @@
             console.error(err)
             this.errorMessage = 'Unknown server error - please try again later.'
           })
+          .finally(() => {
+            this.loading = false
+          })
       },
 
       onCategorySelected (category) {
@@ -131,6 +142,7 @@
       ErrorNotification,
       FontAwesomeIcon,
       LandUseSummary,
+      PulseLoader,
       UseCategoryDropdown
     },
 
@@ -181,6 +193,10 @@ $address-search-offset: 30px;
     .AddressSearchButton {
         background-color: $nashville-zone-lookup-blue;
         color: $light-text-color;
+    }
+
+    .v-spinner {
+      background-color: $nashville-zone-lookup-blue !important;
     }
 }
 
