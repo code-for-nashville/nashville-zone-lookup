@@ -17,7 +17,8 @@
         <land-use-section
             :category="selectedCategory"
             :landUses="landUsesByCategory[selectedCategory]"
-            :showHeader="false"
+            :showHeader="true"
+            :showCollapse="true"
             class="SelectedLandUseCategory"
             v-if="selectedCategory"
         >
@@ -27,6 +28,7 @@
             :key="category"
             :landUses="landUses"
             :showHeader="true"
+            :showCollapse="false"
             class="OtherLandUseCategories"
             v-for="(landUses, category) in landUsesByCategory"
             v-if="!selectedCategory || (displayOtherUses && category != selectedCategory)"
