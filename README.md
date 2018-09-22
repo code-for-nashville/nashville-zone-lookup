@@ -23,7 +23,7 @@ To build and run this app locally:
 - Run the frontend's HTTP server `npm run dev`.
 - Run the database in the background with `docker run -p 5432:5432 --name nashville_zone_lookup_dev -d postgres:9.6`.
 - Create and migrate your database with `mix ecto.setup && mix ecto.migrate`
-- Optionally run the [Postgres shell](https://www.postgresql.org/docs/current/static/app-psql.html) with `docker exec -it nashville_zone_lookup_db psql -U postgres nashville_zone_lookup_dev`
+- Optionally run the [Postgres shell](https://www.postgresql.org/docs/current/static/app-psql.html) with `docker exec -it nashville_zone_lookup_dev psql -U postgres nashville_zone_lookup_db`
 
 _Note: Additional commands are available for the frontend app and are documented in its [README](frontend)._
 
@@ -56,6 +56,9 @@ To test the frontend:
 
 ## Heroku Deployment
 This repository is configured to deploy master automatically to Heroku via Travis CI.
+
+### Env Variables
+`DATABASE_URL="ecto://postgres:postgres@localhost/nashville_zone_lookup_db"`
 
 ## Planning
 - For a detailed description of the project, check out the [Request for Volunteers](https://docs.google.com/document/d/17DNk0QQyi8SEK4utcMt3zT-Dc6vXzA_zcFwrEENvKJo/edit?usp=sharing).

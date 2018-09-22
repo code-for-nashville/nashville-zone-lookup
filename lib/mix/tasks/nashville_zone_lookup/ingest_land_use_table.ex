@@ -11,6 +11,9 @@ defmodule Mix.Tasks.NashvilleZoneLookup.IngestLandUseTable do
   https://docs.google.com/spreadsheets/d/1O0Qc8nErSbstCiWpbpRQ0tPMS0NukCmcov2-s_u8Umg/
   This spreadsheet has a peculiar format described in detail in the source code
   of this task.
+
+  Assuming the spreadsheet was saved as `data.csv` in the root of this project, the command to
+  injest it is `mix nashville_zone_lookup.ingest_land_use_table ./data.csv`.
   """
 
   use Mix.Task

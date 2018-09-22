@@ -52,6 +52,6 @@ config :nashville_zone_lookup, NashvilleZoneLookup.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
-  database: "nashville_zone_lookup_dev",
+  database: "nashville_zone_lookup_db",
   hostname: "localhost",
   pool_size: 10
