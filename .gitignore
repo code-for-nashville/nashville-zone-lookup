@@ -28,3 +28,6 @@ erl_crash.dump
 
 # Elixir Language Server
 /.elixir_ls
+
+# Logs
+selenium-server.log
