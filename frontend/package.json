@@ -16,7 +16,7 @@
     "@fortawesome/fontawesome": "^1.1.5",
     "@fortawesome/fontawesome-free-solid": "^5.0.9",
     "@fortawesome/vue-fontawesome": "^0.0.22",
-    "axios": "^0.17.0",
+    "axios": "^0.21.1",
     "bootstrap-vue": "^2.0.0-rc.6",
     "bugsnag-js": "^4.4.0",
     "bugsnag-vue": "^1.0.1",
